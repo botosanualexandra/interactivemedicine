@@ -1,0 +1,189 @@
+/* Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+/* Minimalistic Scrollbar Styling */
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.hero {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.75) 0%, rgba(118, 75, 162, 0.75) 100%);
+}
+
+div{
+  min-height: 100vh;
+}
+
+.hero h1{
+  color: white;
+  font-size: 3rem;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.hero p{
+  color: rgba(255, 255, 255, 1);
+  font-size: 1rem;
+}
+
+.hero i{
+  background-color: rgba(255, 255, 255, 0);
+  width: 40px;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  color: white;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+
+.hero i {
+  animation: upDown 1s ease-in-out infinite;
+}
+
+.hero i:hover {
+  transform: translateY(0);
+  color: black;
+  background-color: rgb(255, 255, 255);
+}
+
+@keyframes upDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0);
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  color: white;
+  z-index: 1000;
+  padding: 0px 20px;
+}
+
+.language-toggle {
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.language-toggle:hover {
+  background-color: white;
+  color: blue;
+}
+
+.organ-info-panel {
+  background-color: rgba(255, 0, 0, 0);
+  min-height: 100vh;
+  padding: 200px 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  transition: all 0.5s ease;
+}
+
+.organ-info-panel article{
+  background-color: rgba(255, 255, 255, 0.25);
+  max-width: 30rem;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.organ-info-panel button{
+  margin-top: 10px;
+  padding: 15px 20px;
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 200% 200%;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-position 0.3s ease;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.organ-info-panel button:hover{
+  background-position: 100% 100%;
+}
+
+.organ-info-panel h2{
+  color: white;
+  font-size: 2rem;
+}
+
+.organ-info-panel p{
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  min-height: 200px;
+}
+
+#close-button{
+  background-color: rgba(255, 255, 255, 0.25);
+  width: 40px;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  border-bottom-left-radius: 15px;
+}
+
+#close-button:hover {
+  background-color: rgb(255, 74, 28);
+  color: rgb(255, 255, 255);
+}
