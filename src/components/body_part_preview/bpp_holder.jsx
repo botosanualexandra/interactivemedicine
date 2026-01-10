@@ -16,7 +16,7 @@ function BPP({index, bodyPart}) {
   }
 
   const handlePointerEnter = () => {
-    targetScale.current = 1.5;
+    targetScale.current = 1.4;
     document.body.style.cursor = 'pointer';
   }
 
@@ -61,7 +61,7 @@ function BPP({index, bodyPart}) {
         >
           <sphereGeometry args={[1, 32, 32]} />
           <Arm position={[-1, .6, 0]} rotation={[10, 0, .75]} scale={[2.5, 2.5, 2.5]} />
-          <meshStandardMaterial color={currentBodyPart.color || 'red'} transparent opacity={0.15} />
+          <meshStandardMaterial color={currentBodyPart.color || 'red'} transparent opacity={0} />
         </mesh>
       )}
     </>

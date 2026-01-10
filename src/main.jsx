@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 
 import Navbar from './components/Navbar.jsx'
 
-import Arm from './screens/Arm.jsx'
+import Arm from './screens/arm/Arm.jsx'
 import NotFoundPage from './NotFoundPage.jsx'
 
 const router = createBrowserRouter([
