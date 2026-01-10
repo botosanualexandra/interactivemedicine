@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import '../App.css'
+import { Router } from 'react-router-dom'
 
 function Navbar() {
   const [language, setLanguage] = useState('EN')
@@ -20,6 +21,10 @@ function Navbar() {
 
   return (
     <section className="navbar">
+      {window.location.pathname !== '/botosanumedicina' && (
+        <p onClick={() => window.location.href = '/botosanumedicina'}>back</p>
+      )}
+
       <button onClick={toggleLanguage} className="language-toggle">
         {language}
       </button>

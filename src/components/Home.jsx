@@ -3,7 +3,7 @@ import React from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import Overlay from "./Overlay.jsx"
 import BPP from "./body_part_preview/bpp_holder.jsx"
-import { bodyParts } from "../body_parts_list";
+import { bodyParts } from "../body_parts_list.jsx";
 
 function CameraController() {
   const { camera } = useThree()
@@ -153,7 +153,7 @@ function Rotating_Body_Parts({ bodyParts = [] }) {
   )
 }
 
-function Experience() {
+function Home() {
   const { camera } = useThree()
   const currentLanguage = window.currentLanguage || 'EN'
   
@@ -179,4 +179,4 @@ function Experience() {
   )
 }
 
-export default Experience
+export default Home

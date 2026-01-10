@@ -1,12 +1,12 @@
 import { Canvas } from '@react-three/fiber'
-import Experience from './components/Experience.jsx'
+import Home from './components/Home.jsx'
 import './App.css'
 
 function App() {
   return (
     <>
       <Canvas>
-        <Experience />
+        <Home />
       </Canvas>
     </>
   )

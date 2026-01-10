@@ -1,15 +1,12 @@
-
 import { useState, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import Arm from "./bpp_arm.jsx";
 
 function BPP({index, bodyPart}) {
-  const currentLanguage = window.currentLanguage || 'EN';
   const currentBodyPart = bodyPart || {};
-  const [isHovered, setIsHovered] = useState(false);
   const meshRef = useRef();
-  const targetScale = useRef(1);
-  const currentScale = useRef(1);
+  const targetScale = useRef(1.3); // Initial scale value
+  const currentScale = useRef(1.3); // Initial scale value
 
   const handleClick = () => {
     console.log(currentBodyPart.name + ' clicked' + index);
@@ -19,18 +16,16 @@ function BPP({index, bodyPart}) {
   }
 
   const handlePointerEnter = () => {
-    setIsHovered(true);
-    targetScale.current = 1.2;
+    targetScale.current = 1.5;
     document.body.style.cursor = 'pointer';
   }
 
   const handlePointerLeave = () => {
-    setIsHovered(false);
-    targetScale.current = 1;
+    targetScale.current = 1.3;
     document.body.style.cursor = 'default';
   }
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (meshRef.current) {
       // Smooth interpolation towards target scale
       const lerpSpeed = 8; // Adjust this for faster/slower animation
@@ -66,7 +61,7 @@ function BPP({index, bodyPart}) {
         >
           <sphereGeometry args={[1, 32, 32]} />
           <Arm position={[-1, .6, 0]} rotation={[10, 0, .75]} scale={[2.5, 2.5, 2.5]} />
-          <meshStandardMaterial color={currentBodyPart.color || 'red'} transparent opacity={0.5} />
+          <meshStandardMaterial color={currentBodyPart.color || 'red'} transparent opacity={0.15} />
         </mesh>
       )}
     </>
