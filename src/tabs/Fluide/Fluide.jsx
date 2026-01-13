@@ -1,10 +1,10 @@
 
 import { Canvas, useThree, useFrame } from '@react-three/fiber'
-import { Box, OrbitControls, ScrollControls, Scroll, useScroll } from '@react-three/drei'
+import { Box, OrbitControls, ScrollControls, Scroll, useScroll, Stats } from '@react-three/drei'
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
-import './TabSlide1.css'
-import MODEL_Sange from '../../m_sange'
+import './Fluide.css'
+import MODEL_Sange from '../../components/m_sange'
 
 function Home() {
   return (
@@ -98,6 +98,9 @@ function Scene() {
       <gridHelper args={[25, 25]} material-transparent={true} material-opacity={0.2} />
 
       <OrbitControls enablePan={false} enableZoom={false} enableRotate={true} />
+      
+      {/* FPS Stats */}
+      <Stats />
     </>
   );
 }
