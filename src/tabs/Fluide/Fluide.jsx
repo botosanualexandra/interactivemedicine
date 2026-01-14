@@ -6,9 +6,12 @@ import { BlendFunction } from 'postprocessing'
 import './Fluide.css'
 import MODEL_Sange from '../../components/m_sange'
 import { useState, useRef } from 'react';
+import MODEL_Inima from '../../components/m_inima'
+import * as THREE from 'three'
 
 function Home() {
-  const [animationsSpeed, setAnimationsSpeed] = useState(1);
+  const [animationsSpeed, setAnimationsSpeed] = useState(.25);
+  const [heartBpm, setHeartBpm] = useState(72); // Default BPM
   const [debugMode, setDebugMode] = useState(false);
   const [debugCamera, setDebugCamera] = useState({
     position: [0, 2, 8],
@@ -26,6 +29,7 @@ function Home() {
           <ScrollControls pages={6} damping={0.1}>
             <Scene 
               animationsSpeed={animationsSpeed} 
+              heartBpm={heartBpm}
               debugMode={debugMode}
               debugCamera={debugCamera}
               setCurrentSection={setCurrentSection}
@@ -34,7 +38,7 @@ function Home() {
               <Hero />
               <CeEsteUnFluid />
               <Necesara animationsSpeed={animationsSpeed} setAnimationsSpeed={setAnimationsSpeed}/>
-              <CePune />
+              <CePune setHeartBpm={setHeartBpm} />
               <Presiune />
               <Probleme />
             </Scroll>
@@ -66,9 +70,9 @@ function CameraRig({ debugMode, debugCamera, setCurrentSection }) {
     // Necesara - Top down view
     { position: [-10.2, 8.0, -0.1], lookAt: [0.0, 0, 0.0], fov: 15 },
     // CePune - Left side angle
-    { position: [-7.8, -0.3, -1.2], lookAt: [-1.8, 0.3, 1.2], fov: 46 },
-    // Presiune - Bottom view looking up
     { position: [0.0, 0.0, -3.6], lookAt: [0.0, 0.0, 0.0], fov: 80 },
+    // Presiune - Bottom view looking up
+    { position: [-5.4, 2.4, -6.0], lookAt: [0.0, 0.0, 0.0], fov: 35 },
     // Probleme - Wide overview
     { position: [0, 6, 12], lookAt: [0, 0, 0], fov: 50 }
   ]
@@ -162,10 +166,15 @@ function PostProcessing({enabled = true}) {
   return (
     <EffectComposer>
       <Bloom 
-        intensity={0.3}
-        luminanceThreshold={0.9}
+        intensity={1}
+        luminanceThreshold={0.1}
         luminanceSmoothing={0.025}
         blendFunction={BlendFunction.ADD}
+      />
+
+      <ChromaticAberration
+        blendFunction={BlendFunction.NORMAL}
+        offset={[0.001, 0.001]}
       />
     </EffectComposer>
   )
@@ -186,7 +195,88 @@ function Lighting() {
   )
 }
 
-function Scene({ animationsSpeed, debugMode, debugCamera, setCurrentSection }) {
+function HeartRig({ animationsSpeed, heartBpm = 72 }) {
+  const scroll = useScroll()
+  const heartRef = useRef()
+  
+  // Define heart positions for each section
+  const heartPositions = [
+    // Hero - Off screen
+    { position: [0, 0, 0], scale: 0 },
+    // CeEsteUnFluid - Still hidden
+    { position: [0, 0, 0], scale: 0 },
+    // Necesara - Start appearing
+    { position: [0, 0, 0], scale: 0 },
+    // CePune - Heart visible and prominent
+    { position: [0, 0, 0], scale: 1 },
+    // Presiune - Heart center stage
+    { position: [0, 0, 0], scale: 0 },
+    // Probleme - Heart fading away
+    { position: [0, 0, 0], scale: 0 }
+  ]
+  
+  useFrame(() => {
+    if (!scroll || !heartRef.current || typeof scroll.offset !== 'number') {
+      return
+    }
+    
+    try {
+      const offset = Math.max(0, Math.min(1, scroll.offset))
+      
+      // Calculate which section we're in
+      const sectionCount = heartPositions.length
+      const sectionProgress = offset * (sectionCount - 1)
+      const currentSection = Math.floor(sectionProgress)
+      const nextSection = Math.min(currentSection + 1, sectionCount - 1)
+      const lerpFactor = Math.max(0, Math.min(1, sectionProgress - currentSection))
+      
+      // Ensure valid indices
+      if (currentSection < 0 || currentSection >= sectionCount || 
+          nextSection < 0 || nextSection >= sectionCount) {
+        return
+      }
+      
+      const current = heartPositions[currentSection]
+      const next = heartPositions[nextSection]
+      
+      if (!current || !next) return
+      
+      // Smooth interpolation
+      const smoothstep = (t) => t * t * (3 - 2 * t)
+      const smoothLerpFactor = smoothstep(lerpFactor)
+      
+      // Lerp position
+      const lerpedPosition = [
+        current.position[0] + (next.position[0] - current.position[0]) * smoothLerpFactor,
+        current.position[1] + (next.position[1] - current.position[1]) * smoothLerpFactor,
+        current.position[2] + (next.position[2] - current.position[2]) * smoothLerpFactor
+      ]
+      
+      // Lerp scale
+      const lerpedScale = current.scale + (next.scale - current.scale) * smoothLerpFactor
+      
+      // Apply to heart
+      heartRef.current.position.set(...lerpedPosition)
+      heartRef.current.scale.setScalar(lerpedScale)
+      
+    } catch (error) {
+      console.warn('HeartRig update error:', error)
+    }
+  })
+  
+  return (
+    <group ref={heartRef}>
+      <MODEL_Inima rotation={[0, 90, 0]} bpm={heartBpm} />
+    </group>
+  )
+}
+
+function Scene({ animationsSpeed, heartBpm, debugMode, debugCamera, setCurrentSection }) {
+  // Calculate combined animation speed: base speed * BPM multiplier
+  // Normal BPM (72) = 1.0x multiplier, other BPMs scale proportionally
+  const bpmMultiplier = heartBpm / 72 * 2;
+  const combinedAnimationSpeed = animationsSpeed * bpmMultiplier;
+  
   return (
     <>
       <CameraRig 
@@ -194,11 +284,15 @@ function Scene({ animationsSpeed, debugMode, debugCamera, setCurrentSection }) {
         debugCamera={debugCamera}
         setCurrentSection={setCurrentSection}
       />
-      <PostProcessing enabled={false} />
+      <PostProcessing enabled={true} />
       <Lighting />
 
       <group rotation={[0, -45, 0]} position={[0, -.1, 0]}>
-        <MODEL_Sange position={[0, 0, 0]} rotation={[0, Math.PI / 2, 0]} scale={.9} animationSpeed={animationsSpeed} />
+        <MODEL_Sange position={[0, 0, 0]} rotation={[0, Math.PI / 2, 0]} scale={.9} animationSpeed={combinedAnimationSpeed} />
+      </group>
+
+      <group position={[-2.5, 1, 2]} scale={1.5} rotation={[0, 0, 0]}>
+        <HeartRig animationsSpeed={animationsSpeed} heartBpm={heartBpm} />
       </group>
 
       <gridHelper args={[25, 25]} material-transparent={true} material-opacity={0.2} />
@@ -263,9 +357,9 @@ function Necesara({ animationsSpeed, setAnimationsSpeed }){
           type="range" 
           id="flow-speed" 
           min="0.1" 
-          max="2" 
+          max="1" 
           step="0.1" 
-          defaultValue="1"
+          defaultValue=".25"
           onChange={(e) => setAnimationsSpeed(parseFloat(e.target.value))}
         />
         {/* <span>{animationsSpeed}x</span> */}
@@ -293,7 +387,24 @@ function Necesara({ animationsSpeed, setAnimationsSpeed }){
   )
 }
 
-function CePune(){
+function CePune({ setHeartBpm }){
+   const bpms = {
+    72: 'Normal', 
+    100: 'Light exercise',
+    140: 'Moderate exercise',
+    180: 'High intensity exercise'
+  };
+
+  const [selectedBpmIndex, setSelectedBpmIndex] = useState(0);
+  const bpmValues = Object.keys(bpms).map(Number);
+  const currentBpm = bpmValues[selectedBpmIndex];
+  const currentDescription = bpms[currentBpm];
+
+  const handleBpmChange = (index) => {
+    setSelectedBpmIndex(index);
+    setHeartBpm(bpmValues[index]);
+  };
+
   return (
     <figure className="cepune">
       <header>
@@ -316,9 +427,23 @@ function CePune(){
           <li>respirație</li>
           <li>valvele vaselor limfatice</li>
         </ul>
-        </article>
+      </article>
       👉 Apasă pe inimă → vezi pulsul și debitul.
       👉 Activează mușchii → vezi limfa cum începe să circule.
+
+      <div style={{ margin: '20px 0' }}>
+        <h3>Bătăi Pe Minut: {currentBpm}bpm - {currentDescription}</h3>
+        <input 
+          type="range" 
+          id="bpm-slider" 
+          min="0" 
+          max={bpmValues.length - 1} 
+          step="1" 
+          value={selectedBpmIndex}
+          style={{ margin: '0 10px' }}
+          onChange={(e) => handleBpmChange(parseInt(e.target.value))}
+        />
+      </div>
     </figure>
   )
 }
@@ -335,6 +460,7 @@ function Presiune() {
         <li>vâscozitate</li>
       </ul>
       👉 Slider pentru diametrul vasului → vezi viteza modificată.
+      
     </figure>
   )
 }
