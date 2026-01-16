@@ -38,6 +38,15 @@
   flex-direction: column;
 }
 
+#ceeste_muschi .close_panel{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 0, 0, 0);
+}
+
 .muschi_panel {
   background-color: rgba(0, 0, 0, 0.1);
   width: 40%;
@@ -52,6 +61,7 @@
   margin-right: -10px;
   backdrop-filter: blur(8px);
   transition: transform 0.25s ease;
+  z-index: 99999;
 }
 
 #muschi_panel_visible {

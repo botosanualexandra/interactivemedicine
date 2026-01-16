@@ -13,6 +13,7 @@ import { Html } from '@react-three/drei';
 import { useRef } from 'react';
 import { useContext } from 'react';
 import { muschiContext } from '../tabs/Muschi/Muschi.jsx'; // Adjust path as needed
+import textDocument from '../tabs/Muschi/TextDocument';
 
 
 function NODISPLAYMATERIAL(){
@@ -34,6 +35,13 @@ function BRAINMATERIAL(){
 }
 
 export function MODEL_Muscles(props) {
+    // Language state (sync with global)
+    const [language, setLanguage] = useState(window.currentLanguage === 'EN' ? 'en' : 'ro');
+    useEffect(() => {
+      const handler = (e) => setLanguage(e.detail === 'EN' ? 'en' : 'ro');
+      window.addEventListener('languageChanged', handler);
+      return () => window.removeEventListener('languageChanged', handler);
+    }, []);
   const group = React.useRef()
   const { scene, animations } = useGLTF('./models/muschi.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
@@ -223,14 +231,14 @@ export function MODEL_Muscles(props) {
         
         {hoveredLeft && focusedGroup !== 'left' && (
           <Text
-          position={[0, 1, 0]}
-          fontSize={0.25}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-        >
-          Scheletici 
-        </Text>
+            position={[0, 1, 0]}
+            fontSize={0.25}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {textDocument.ceEste.scheletici[language]}
+          </Text>
         )}
       </animated.group>
 
@@ -246,15 +254,15 @@ export function MODEL_Muscles(props) {
         <mesh geometry={nodes.smoothmuscle_2.geometry} material={NODISPLAYMATERIAL()} />
         
         {hoveredRight && focusedGroup !== 'right' && (
-        <Text
-          position={[0, 1, 0]}
-          fontSize={0.25}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-        >
-          Cardiaci
-        </Text>
+          <Text
+            position={[0, 1, 0]}
+            fontSize={0.25}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {textDocument.ceEste.cardiac[language]}
+          </Text>
         )}
       </animated.group>
 
@@ -270,15 +278,15 @@ export function MODEL_Muscles(props) {
         <mesh geometry={nodes.cardiacmuscle_2.geometry} material={NODISPLAYMATERIAL()} />
         
         {hoveredCenter && focusedGroup !== 'center' && (
-        <Text
-          position={[0, 1, 0]}
-          fontSize={0.25}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-        >
-          Netezi 
-        </Text>
+          <Text
+            position={[0, 1, 0]}
+            fontSize={0.25}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {textDocument.ceEste.netezi[language]}
+          </Text>
         )}
       </animated.group>
 

@@ -4,6 +4,7 @@ import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { Box, OrbitControls, ScrollControls, Scroll, useScroll, Stats, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import MODEL_Muscles from '../../components/m_muscles';
+import textDocument from './TextDocument';
 import { useState, useRef, useEffect } from 'react';
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
@@ -164,6 +165,13 @@ function Muschi() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const sendImpulse = useRef();
   const [focusedGroup, setFocusedGroup] = useState(null);
+  const [language, setLanguage] = useState(window.currentLanguage === 'EN' ? 'en' : 'ro');
+
+  useEffect(() => {
+    const handler = (e) => setLanguage(e.detail === 'EN' ? 'en' : 'ro');
+    window.addEventListener('languageChanged', handler);
+    return () => window.removeEventListener('languageChanged', handler);
+  }, []);
 
   // Custom hook to track scroll page
   function PageTracker() {
@@ -184,21 +192,18 @@ function Muschi() {
   return (
     <muschiContext.Provider value={{ focusedGroup, setFocusedGroup }}>
       <article className="Muschi">
-        {/* <div style={{position: 'absolute', top: 10, left: 10, zIndex: 10, background: 'rgba(0,0,0,0.5)', color: 'white', padding: '0.5rem', borderRadius: '8px'}}>
-          currentPage = {currentPage}
-        </div> */}
         <Canvas style={{ height: '100vh' }} camera={{ position: [0, 2, 5], fov: 40 }}>
           <ScrollControls pages={cameraStates.length} damping={0.1} enabled={scrollEnabled}>
             <PageTracker />
             <Scene currentPage={currentPage} selectedArmType={selectedArmType} sendImpulse={sendImpulse} elapsedTime={elapsedTime}
                   />
             <Scroll html style={{ width: '100%' }}>
-              <Hero />
-              <CeEste focusedGroup={focusedGroup} setFocusedGroup={setFocusedGroup} />
-              <CeEsteContractia />
-              <Structura selectedArmType={selectedArmType} setSelectedArmType={setSelectedArmType} />
-              <CumApare sendImpulse={() => sendImpulse.current()} />
-              <Forta setElapsedTime={setElapsedTime} />
+              <Hero language={language} />
+              <CeEste focusedGroup={focusedGroup} setFocusedGroup={setFocusedGroup} language={language} />
+              <CeEsteContractia language={language} />
+              <Structura selectedArmType={selectedArmType} setSelectedArmType={setSelectedArmType} language={language} />
+              <CumApare sendImpulse={() => sendImpulse.current()} language={language} />
+              <Forta setElapsedTime={setElapsedTime} language={language} />
             </Scroll>
           </ScrollControls>
         </Canvas>
@@ -207,139 +212,119 @@ function Muschi() {
   );
 }
 
-function Hero() {
+function Hero({ language }) {
   return (
     <figure className="hero">
-      <h1>mușchiul</h1>
+      <h1>{textDocument.hero[language]}</h1>
     </figure>
   );
 }
 
-function CeEste({focusedGroup = 'left', setFocusedGroup}) {
-
-  const information = {
-    'left': {
-      title: 'Mușchi scheletici',
-      description: 'Mușchii scheletici sunt atașați de oase și sunt responsabili pentru mișcarea voluntară a corpului.'
-    },
-    'right': {
-      title: 'Mușchi cardiac',
-      description: 'Mușchiul cardiac este un tip special de mușchi care se găsește doar în inimă și este responsabil pentru pomparea sângelui.'
-    },
-    'center': {
-      title: 'Mușchi netezi',
-      description: 'Mușchii netezi se găsesc în pereții organelor interne și sunt responsabili pentru mișcările involuntare, cum ar fi contracțiile intestinale.'
-    }
-  };
+function CeEste({ focusedGroup = 'left', setFocusedGroup, language }) {
+  const info = textDocument.ceEste.info;
+  const groupKey = focusedGroup || 'default';
   return (
     <figure id='ceeste_muschi'>
-      <h1>1️⃣ Ce este mușchiul și ce face?</h1>
+      <h1>{textDocument.ceEste.title[language]}</h1>
       <article>
         <ul>
-          <h3>Mușchiul este un organ activ care:</h3>
-          <li>produce forță</li>
-          <li>produce mișcare</li>
-          <li>menține postura</li>
+          <h3>{textDocument.ceEste.organ[language]}</h3>
+          <li>{textDocument.ceEste.produce_forta[language]}</li>
+          <li>{textDocument.ceEste.produce_miscare[language]}</li>
+          <li>{textDocument.ceEste.mentine_postura[language]}</li>
         </ul>
-
         <ul>
-          <h3>Tipuri de mușchi:</h3>
-          <li>scheletici</li>
-          <li>cardiac</li>
-          <li>netezi</li>
+          <h3>{textDocument.ceEste.tipuri[language]}</h3>
+          <li>{textDocument.ceEste.scheletici[language]}</li>
+          <li>{textDocument.ceEste.cardiac[language]}</li>
+          <li>{textDocument.ceEste.netezi[language]}</li>
         </ul>
       </article>
-
       <section className='muschi_panel' id={focusedGroup ? 'muschi_panel_visible' : 'muschi_panel_hidden'}>
-        <h1>{information[focusedGroup]?.title || ''}</h1>
+        <h1>{info[groupKey]?.title?.[language] || ''}</h1>
         <p>
-          {information[focusedGroup]?.description || 'Selectați un tip de mușchi pentru a vedea informații.'}
+          {info[groupKey]?.description?.[language] || info.default[language]}
         </p>
         <i className="fa-solid fa-xmark" onClick={() => setFocusedGroup(null)}></i>
-        <button onClick={() => setFocusedGroup(null)}>am inteles</button>
-          
+        <button onClick={() => setFocusedGroup(null)}>{textDocument.ceEste.close[language]}</button>
       </section>
+
+      {focusedGroup && <section className='close_panel' onClick={() => setFocusedGroup(null)}></section>}
     </figure>
   );
 }
 
-function CeEsteContractia() {
+function CeEsteContractia({ language }) {
   return (
     <figure >
-      <h1>2️⃣ Ce este contracția musculară?</h1>
-      <p>scurtarea sau tensionarea mușchiului prin alunecarea filamentelor interne.</p>
+      <h1>{textDocument.ceEsteContractia.title[language]}</h1>
+      <p>{textDocument.ceEsteContractia.desc[language]}</p>
       <ul>
-        <h3>Mușchiul poate:</h3>
-        <li>să se scurteze</li>
-        <li>să rămână la aceeași lungime</li>
-        <li>să se alungească sub tensiune</li>
+        <h3>{textDocument.ceEsteContractia.poate[language]}</h3>
+        <li>{textDocument.ceEsteContractia.scurteze[language]}</li>
+        <li>{textDocument.ceEsteContractia.ramana[language]}</li>
+        <li>{textDocument.ceEsteContractia.alungeasca[language]}</li>
       </ul>
     </figure>
   );
 }
 
-function Structura({ selectedArmType, setSelectedArmType }){
+function Structura({ selectedArmType, setSelectedArmType, language }){
     return (
     <figure id='structura_muschiului'>
-      <h1>3️⃣ Tipuri de contracție musculară</h1>
-
+      <h1>{textDocument.structura.title[language]}</h1>
       <article>
         <ul>
-          <h3>Contracție izotonică</h3>
-          <li>Mușchiul se scurtează</li>
-          <li>Produce mișcare</li>
+          <h3>{textDocument.structura.izotonica.title[language]}</h3>
+          <li>{textDocument.structura.izotonica.scurteaza[language]}</li>
+          <li>{textDocument.structura.izotonica.miscare[language]}</li>
           <li><button onClick={() => setSelectedArmType(1)} 
-          id={selectedArmType === 1 ? "struct_btn_selected" : ""}>Vizualizare</button></li>
+          id={selectedArmType === 1 ? "struct_btn_selected" : ""}>{textDocument.structura.izotonica.vizualizare[language]}</button></li>
         </ul>
-
         <ul>
-          <h3>Contracție izometrică</h3>
-          <li>Mușchiul nu se scurtează</li>
-          <li>Produce forță fără mișcare</li>
+          <h3>{textDocument.structura.izometrica.title[language]}</h3>
+          <li>{textDocument.structura.izometrica.neschimba[language]}</li>
+          <li>{textDocument.structura.izometrica.forta[language]}</li>
           <li><button onClick={() => setSelectedArmType(2)}
-            id={selectedArmType === 2 ? "struct_btn_selected" : ""}>Vizualizare</button></li>
+            id={selectedArmType === 2 ? "struct_btn_selected" : ""}>{textDocument.structura.izometrica.vizualizare[language]}</button></li>
         </ul>
-
         <ul>
-          <h3>Contracție excentrică</h3>
-          <li>Mușchiul se alungește sub tensiune</li>
-          <li>Exemplu: coborârea unei greutăți</li>
+          <h3>{textDocument.structura.excentrica.title[language]}</h3>
+          <li>{textDocument.structura.excentrica.alungeste[language]}</li>
+          <li>{textDocument.structura.excentrica.exemplu[language]}</li>
           <li><button onClick={() => setSelectedArmType(3)}
-            id={selectedArmType === 3 ? "struct_btn_selected" : ""}>Vizualizare</button></li>
+            id={selectedArmType === 3 ? "struct_btn_selected" : ""}>{textDocument.structura.excentrica.vizualizare[language]}</button></li>
         </ul>
       </article>
     </figure>
   );
 }
 
-function CumApare({sendImpulse}){
+function CumApare({ sendImpulse, language }){
     return (
       <figure id='cumapare'>
-        <h1>4️⃣ Cum apare contracția?</h1>
-
+        <h1>{textDocument.cumApare.title[language]}</h1>
         <ol>
-          <h3>Contracție izotonică</h3>
-          <li>Creierul trimite impuls nervos</li>
-          <li>Nervul ajunge la mușchi</li>
-          <li><div className='li_w_span'> Se eliberează <span>Ca²⁺</span> </div></li>
-          <li>Are loc alunecarea filamentelor</li>
-          <li><button onClick={() => {sendImpulse()}}>Trimite impuls</button></li>
+          <h3>{textDocument.cumApare.izotonica[language]}</h3>
+          {textDocument.cumApare.steps.map((step, idx) => (
+            <li key={idx}>{step[language]}</li>
+          ))}
+          <li><button onClick={() => {sendImpulse()}}>{textDocument.cumApare.sendImpulse[language]}</button></li>
         </ol>
       </figure>
     );
 }
 
-function Forta({setElapsedTime}){
+function Forta({ setElapsedTime, language }){
     return (
     <figure id='forta_musculara'>
-      <h1>5️⃣ Forța musculară</h1>
-
+      <h1>{textDocument.forta.title[language]}</h1>
       <ul>
-        <h3>Ce determină forța:</h3>
-        <li>dimensiunea mușchiului</li>
-        <li>numărul fibrelor activate</li>
-        <li>nivelul de antrenament</li>
-        <h3>Număr de fibre active</h3>
+        <h3>{textDocument.forta.ceDetermina[language]}</h3>
+        <li>{textDocument.forta.dimensiune[language]}</li>
+        <li>{textDocument.forta.numarFibre[language]}</li>
+        <li>{textDocument.forta.antrenament[language]}</li>
+        <h3>{textDocument.forta.numarActive[language]}</h3>
         <input
           id="fibersSlider"
           type="range"
