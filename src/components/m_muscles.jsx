@@ -11,6 +11,9 @@ import { useGraph } from '@react-three/fiber'
 import { SkeletonUtils } from 'three-stdlib'
 import { Html } from '@react-three/drei';
 import { useRef } from 'react';
+import { useContext } from 'react';
+import { muschiContext } from '../tabs/Muschi/Muschi.jsx'; // Adjust path as needed
+
 
 function NODISPLAYMATERIAL(){
   return new THREE.MeshBasicMaterial({ visible: false });
@@ -40,11 +43,16 @@ export function MODEL_Muscles(props) {
   const [hoveredLeft, setHoveredLeft] = useState(false);
   const [hoveredCenter, setHoveredCenter] = useState(false);
   const [hoveredRight, setHoveredRight] = useState(false);
-  const [focusedGroup, setFocusedGroup] = useState(null); // 'left', 'center', 'right', or null
+
+  const { focusedGroup, setFocusedGroup } = useContext(muschiContext ? muschiContext : { focusedGroup: null, setFocusedGroup: () => {} });
 
   useEffect(() => {
+    if(focusedGroup !== null){ 
+      document.body.style.cursor = 'auto';
+      return;
+    }
     document.body.style.cursor = (hoveredLeft || hoveredCenter || hoveredRight) ? 'pointer' : 'auto';
-  }, [hoveredLeft, hoveredCenter, hoveredRight]);
+  }, [hoveredLeft, hoveredCenter, hoveredRight, focusedGroup]);
 
   const currentPage = props.currentPage || 0;
   const sendImpulse = props.sendImpulse || (() => {});
@@ -207,7 +215,7 @@ export function MODEL_Muscles(props) {
         scale={leftSpring.scale}
         onPointerOver={() => currentPage === 2 && setHoveredLeft(true)}
         onPointerOut={() => setHoveredLeft(false)}
-        onClick={() => setFocusedGroup(focusedGroup === 'left' ? null : 'left')}
+        onClick={focusedGroup ? undefined : () => setFocusedGroup('left')}
       >
         <mesh geometry={nodes.skeletalmuscle.geometry} material={materials.Muscle} />
         <mesh geometry={nodes.skeletalmuscle_1.geometry} material={materials.Rock} />
@@ -221,7 +229,7 @@ export function MODEL_Muscles(props) {
           anchorX="center"
           anchorY="middle"
         >
-          scheletici 
+          Scheletici 
         </Text>
         )}
       </animated.group>
@@ -231,7 +239,7 @@ export function MODEL_Muscles(props) {
         scale={rightSpring.scale}
         onPointerOver={() => currentPage === 2 && setHoveredRight(true)}
         onPointerOut={() => setHoveredRight(false)}
-        onClick={() => setFocusedGroup(focusedGroup === 'right' ? null : 'right')}
+        onClick={focusedGroup ? undefined : () => setFocusedGroup('right')}
       >
         <mesh geometry={nodes.smoothmuscle.geometry} material={materials['Muscle no Texture']} />
         <mesh geometry={nodes.smoothmuscle_1.geometry} material={materials.Rock} />
@@ -245,7 +253,7 @@ export function MODEL_Muscles(props) {
           anchorX="center"
           anchorY="middle"
         >
-          cardiaci
+          Cardiaci
         </Text>
         )}
       </animated.group>
@@ -255,7 +263,7 @@ export function MODEL_Muscles(props) {
         scale={centerSpring.scale}
         onPointerOver={() => currentPage === 2 && setHoveredCenter(true)}
         onPointerOut={() => setHoveredCenter(false)}
-        onClick={() => setFocusedGroup(focusedGroup === 'center' ? null : 'center')}
+        onClick={focusedGroup ? undefined : () => setFocusedGroup('center')}
       >
         <mesh geometry={nodes.cardiacmuscle.geometry} material={materials.Muscle} />
         <mesh geometry={nodes.cardiacmuscle_1.geometry} material={materials.Rock} />
@@ -269,7 +277,7 @@ export function MODEL_Muscles(props) {
           anchorX="center"
           anchorY="middle"
         >
-          netezi 
+          Netezi 
         </Text>
         )}
       </animated.group>

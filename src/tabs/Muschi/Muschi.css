@@ -3,7 +3,7 @@
   width: 100%;
   background-color: rgba(255, 0, 0, 0);
   min-height: 110vh;
-  border-bottom: 1px solid rgba(255, 255, 255, .5);
+  /* border-bottom: 1px solid rgba(255, 255, 255, .5); */
   padding: 2rem;
   margin-top: 50px;
 }
@@ -42,15 +42,63 @@
   background-color: rgba(0, 0, 0, 0.1);
   width: 40%;
   margin-left: auto;
+  margin-top: auto;
+  margin-bottom: auto;
   padding: 10px 20px;
   border-radius: 20px;
-  margin-top: 20px;
   min-height: 35vh;
-  display: none;
+  overflow: hidden;
+  margin-bottom: 250px;
+  margin-right: -10px;
+  backdrop-filter: blur(8px);
+  transition: transform 0.25s ease;
 }
 
 #muschi_panel_visible {
-  display: block;
+  transform: translateX(0px);
+}
+
+#muschi_panel_hidden {
+  transform: translateX(150%);
+}
+
+.muschi_panel i{
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  background-color: rgba(255, 0, 0, 0);
+  width: 30px;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.muschi_panel i:hover{
+  background-color: rgba(255, 0, 0, 0.8);
+}
+
+
+.muschi_panel button {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  margin: 0px;
+  border-radius: 0px;
+  background-color: rgba(76, 76, 255, 1);
+  background: linear-gradient(90deg, #7f5fff 0%, #4c4cff 100%);
+  transition: all 0.3s ease;
+  padding: 15px 0px;
+}
+
+.muschi_panel button:hover {
+  background-position: 100% 0;
+  background-size: 200% 100%;
 }
 
 #structura_muschiului article {

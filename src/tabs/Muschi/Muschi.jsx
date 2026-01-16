@@ -7,9 +7,13 @@ import MODEL_Muscles from '../../components/m_muscles';
 import { useState, useRef, useEffect } from 'react';
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
+import { createContext, useContext } from 'react';
+import { createRoot } from 'react-dom/client';
+
+export const muschiContext = createContext();
 
 const cameraStates = [
-  { position: [-3, 0, 6], lookAt: [0, 1, 0], fov: 35 },
+  { position: [-5, 0, 5], lookAt: [0, .0, 0], fov: 60 },
   { position: [0, 0, 5], lookAt: [.15, .3, 0], fov: 35 },
   { position: [-5, 7, 4], lookAt: [-3, 0, 0], fov: 45 },
   { position: [-3, -2, 6], lookAt: [-2, 0, 0], fov: 60 },
@@ -122,6 +126,7 @@ function Skybox() {
 }
 
 function Scene({ currentPage, selectedArmType, sendImpulse, elapsedTime }) {
+
   return (
     <>
       <CameraController />
@@ -157,13 +162,13 @@ function Muschi() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedArmType, setSelectedArmType] = useState(1);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const sendImpulse = useRef(() => {console.log('Impulse sent')});
-  const scrollRef = useRef();
+  const sendImpulse = useRef();
+  const [focusedGroup, setFocusedGroup] = useState(null);
 
   // Custom hook to track scroll page
   function PageTracker() {
     const scroll = useScroll();
-    const PAGE_OFFSET = 0.3; // Change this value for earlier/later switching
+    const PAGE_OFFSET = 0.4; // Change this value for earlier/later switching
     useFrame(() => {
       if (!scroll) return;
       const pages = cameraStates.length;
@@ -174,27 +179,31 @@ function Muschi() {
     return null;
   }
 
+  // Disable scroll when a group is focused
+  const scrollEnabled = focusedGroup === null;
   return (
-    <article className="Muschi">
-      <div style={{position: 'absolute', top: 10, left: 10, zIndex: 10, background: 'rgba(0,0,0,0.5)', color: 'white', padding: '0.5rem', borderRadius: '8px'}}>
-        currentPage = {currentPage}
-      </div>
-      <Canvas style={{ height: '100vh' }} camera={{ position: [0, 2, 5], fov: 40 }}>
-        <ScrollControls pages={cameraStates.length} damping={0.1}>
-          <PageTracker />
-          <Scene currentPage={currentPage} selectedArmType={selectedArmType} sendImpulse={sendImpulse} elapsedTime={elapsedTime}
-                 />
-          <Scroll html style={{ width: '100%' }}>
-            <Hero />
-            <CeEste />
-            <CeEsteContractia />
-            <Structura selectedArmType={selectedArmType} setSelectedArmType={setSelectedArmType} />
-            <CumApare sendImpulse={() => sendImpulse.current()} />
-            <Forta setElapsedTime={setElapsedTime} />
-          </Scroll>
-        </ScrollControls>
-      </Canvas>
-    </article>
+    <muschiContext.Provider value={{ focusedGroup, setFocusedGroup }}>
+      <article className="Muschi">
+        {/* <div style={{position: 'absolute', top: 10, left: 10, zIndex: 10, background: 'rgba(0,0,0,0.5)', color: 'white', padding: '0.5rem', borderRadius: '8px'}}>
+          currentPage = {currentPage}
+        </div> */}
+        <Canvas style={{ height: '100vh' }} camera={{ position: [0, 2, 5], fov: 40 }}>
+          <ScrollControls pages={cameraStates.length} damping={0.1} enabled={scrollEnabled}>
+            <PageTracker />
+            <Scene currentPage={currentPage} selectedArmType={selectedArmType} sendImpulse={sendImpulse} elapsedTime={elapsedTime}
+                  />
+            <Scroll html style={{ width: '100%' }}>
+              <Hero />
+              <CeEste focusedGroup={focusedGroup} setFocusedGroup={setFocusedGroup} />
+              <CeEsteContractia />
+              <Structura selectedArmType={selectedArmType} setSelectedArmType={setSelectedArmType} />
+              <CumApare sendImpulse={() => sendImpulse.current()} />
+              <Forta setElapsedTime={setElapsedTime} />
+            </Scroll>
+          </ScrollControls>
+        </Canvas>
+      </article>
+    </muschiContext.Provider>
   );
 }
 
@@ -206,9 +215,22 @@ function Hero() {
   );
 }
 
-function CeEste({focusedGroup, setFocusedGroup}) {
-  useEffect(() => { console.log("Selected muscle type:", focusedGroup); }, [focusedGroup]);
+function CeEste({focusedGroup = 'left', setFocusedGroup}) {
 
+  const information = {
+    'left': {
+      title: 'Mușchi scheletici',
+      description: 'Mușchii scheletici sunt atașați de oase și sunt responsabili pentru mișcarea voluntară a corpului.'
+    },
+    'right': {
+      title: 'Mușchi cardiac',
+      description: 'Mușchiul cardiac este un tip special de mușchi care se găsește doar în inimă și este responsabil pentru pomparea sângelui.'
+    },
+    'center': {
+      title: 'Mușchi netezi',
+      description: 'Mușchii netezi se găsesc în pereții organelor interne și sunt responsabili pentru mișcările involuntare, cum ar fi contracțiile intestinale.'
+    }
+  };
   return (
     <figure id='ceeste_muschi'>
       <h1>1️⃣ Ce este mușchiul și ce face?</h1>
@@ -228,12 +250,13 @@ function CeEste({focusedGroup, setFocusedGroup}) {
         </ul>
       </article>
 
-      <section className='muschi_panel' id='muschi_panel_visible'>
-        <h1>retet</h1>
+      <section className='muschi_panel' id={focusedGroup ? 'muschi_panel_visible' : 'muschi_panel_hidden'}>
+        <h1>{information[focusedGroup]?.title || ''}</h1>
         <p>
-          rererererrr
+          {information[focusedGroup]?.description || 'Selectați un tip de mușchi pentru a vedea informații.'}
         </p>
-        <button onClick={() => {}}>Scheletici</button>
+        <i className="fa-solid fa-xmark" onClick={() => setFocusedGroup(null)}></i>
+        <button onClick={() => setFocusedGroup(null)}>am inteles</button>
           
       </section>
     </figure>
@@ -250,7 +273,6 @@ function CeEsteContractia() {
         <li>să se scurteze</li>
         <li>să rămână la aceeași lungime</li>
         <li>să se alungească sub tensiune</li>
-        👉 Animație „zoom” în interiorul mușchiului.
       </ul>
     </figure>
   );
