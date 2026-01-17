@@ -74,7 +74,7 @@ function Home() {
     };
   }, []);
 
-  const windowLocations = ['/botosanumedicina/circulatia', '/botosanumedicina/muschi', '/parghii-oasele', '/forta'];
+  const windowLocations = ['/botosanumedicina/circulatia', '/botosanumedicina/muschi', '/botosanumedicina/parghii', '/botosanumedicina/forta'];
 
   return (
     <>

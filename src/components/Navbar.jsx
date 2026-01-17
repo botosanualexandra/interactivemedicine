@@ -3,7 +3,7 @@ import './Navbar.css'
 import { Router } from 'react-router-dom'
 
 function Navbar() {
-  const [language, setLanguage] = useState('EN')
+  const [language, setLanguage] = useState('RO')
 
   const toggleLanguage = () => {
     const newLanguage = language === 'EN' ? 'RO' : 'EN'

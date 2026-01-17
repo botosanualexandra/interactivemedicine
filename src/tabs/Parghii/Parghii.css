@@ -1,0 +1,32 @@
+
+.Parghii figure {
+  width: 100%;
+  background-color: rgba(255, 0, 0, 0);
+  min-height: 110vh;
+  border-bottom: 1px solid rgba(255, 255, 255, .5);
+  padding: 2rem;
+  margin-top: 50px;
+}
+
+.Parghii figure:nth-child(1){
+  min-height: 100vh;
+    margin-top: 0px;
+}
+
+.Parghii article {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tipurii{
+  margin: 0;
+}
+
+.tipurii ul{
+  min-height: 100vh;
+  border-bottom: 1px solid rgba(255, 255, 255, .5);
+}
+
+.tipurii h2{
+  margin-top: 0;
+}
