@@ -75,8 +75,8 @@ function Home() {
   }, []);
 
   const base = import.meta.env.BASE_URL;
-  const windowLocations = [`${base}fluide`, `${base}muschi`, `${base}parghii`, `${base}forta`];
-
+  const windowLocations = [`/fluide`, `/muschi`, `/parghii`, `/forta`];
+  const navigate = useNavigate();
   return (
     <>
       <section className="hero">
@@ -89,7 +89,7 @@ function Home() {
         <section className="overlay">
           <h1>{allChapters[selectedChapter].title[language]}</h1>
           <p>{allChapters[selectedChapter].desc[language]}</p>
-          <button onClick={() => window.location.href = windowLocations[selectedChapter]}>
+          <button onClick={() => navigate(windowLocations[selectedChapter])}>
             {allChapters[selectedChapter].button ? allChapters[selectedChapter].button[language] : (language === 'en' ? 'Learn More' : 'Află mai multe')}
           </button>
           <i className="fa-solid fa-arrow-left" id='arrowLeft'></i>
