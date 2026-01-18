@@ -4,7 +4,7 @@ function NotFoundPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: '10px' }}>
       <h1>Page not found ❌ </h1>
-      <Link to="/botosanumedicina" style={{ 
+      <Link to="/" style={{ 
         padding: '12px 24px',
         backgroundColor: '#007bff',
         color: 'white',
