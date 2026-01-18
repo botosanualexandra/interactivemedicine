@@ -8,25 +8,133 @@ import { useGraph } from '@react-three/fiber'
 import { useGLTF, useAnimations } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import { animated, useSpring} from '@react-spring/three';
+import * as THREE from 'three'
+
+// Custom material that always renders on top
+export const alwaysOnTopMaterial = new THREE.MeshStandardMaterial({
+  color: '#ffffff',
+  depthTest: false,
+  depthWrite: false,
+  polygonOffset: true,
+  polygonOffsetFactor: -4,
+  transparent: true,
+  opacity: 1,
+})
+alwaysOnTopMaterial.onBeforeCompile = shader => {
+  shader.depthTest = false
+  shader.depthWrite = false
+}
 
 export function Model(props) {
   const group = React.useRef()
   const { scene, animations } = useGLTF('./models/parghii.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
   const { nodes, materials } = useGraph(clone)
+  // Replace 'TEXT' material with alwaysOnTopMaterial
+  if (materials && materials.TEXT) {
+    materials.TEXT = alwaysOnTopMaterial;
+  }
   const { actions, names} = useAnimations(animations, group)
 
   const currentPage = props.currentPage || 0;
+  const s3_1_ElapsedTime = props.s3_1_ElapsedTime || 0;
+  const animationsSpeed = .5;
+  const triggerVarfuri = props.triggerVarfuri || 0;
+  const triggerGreutate = props.triggerGreutate || 0;
+  const triggerAruncare = props.triggerAruncare || 0;
+  const postura = props.postura || 0;
+
+  useEffect(() => {
+    const action = actions['S3_2_Animation'];
+    if (action) {
+      action.reset(); // Ensure animation starts from the beginning
+      action.setLoop(THREE.LoopOnce, 1);
+      action.clampWhenFinished = true;
+      action.setEffectiveTimeScale(1);
+      action.play();
+    }
+  }, [triggerVarfuri])
+
+  useEffect(() => {
+    const action = actions['S6_Animation_2'];
+    if (action) {
+      action.reset(); // Ensure animation starts from the beginning
+      action.setLoop(THREE.LoopOnce, 1);
+      action.clampWhenFinished = true;
+      action.setEffectiveTimeScale(1);
+      action.play();
+    }
+
+    const action2 = actions['S6_Bulger_Animation'];
+    if (action2) {
+      action2.reset(); // Ensure animation starts from the beginning
+      action2.setLoop(THREE.LoopOnce, 1);
+      action2.clampWhenFinished = true;
+      action2.setEffectiveTimeScale(1);
+      action2.play();
+    }
+
+  }, [triggerAruncare])
+
+  useEffect(() => {
+    const action = actions['S2_Animation.001'];
+    if (action) {
+      action.reset(); // Ensure animation starts from the beginning
+      action.setLoop(THREE.LoopOnce, 1);
+      action.clampWhenFinished = true;
+      action.setEffectiveTimeScale(.25);
+      action.play();
+    }
+  }, [triggerGreutate])
+
+  useEffect(() => {
+    const s3Action = actions['S7_Action'];
+    if (s3Action) {
+      const duration = s3Action.getClip().duration;
+      const time = (postura) % duration;
+      s3Action.time = time;
+      s3Action.paused = true; // Pause the action to control time manually
+    }
+    console.log(s3Action.getClip().duration);
+  }, [postura])
+
+  useEffect(() => {
+    const s3Action = actions['S3_1_Animation'];
+    if (s3Action) {
+      const duration = s3Action.getClip().duration;
+      const time = (s3_1_ElapsedTime) % duration;
+      s3Action.time = time;
+      s3Action.paused = true; // Pause the action to control time manually
+    }
+    console.log(s3Action.getClip().duration);
+  }, [s3_1_ElapsedTime])
 
   useEffect(() => {
     for (const action of Object.values(actions)) {
-      action.play()
-      // console.log('Playing action:', names)
+      action.setEffectiveTimeScale(.5);
+
+      if(action.getClip().name !== 'S3_1_Animation' 
+      || action.getClip().name !== 'S3_2_Animation'
+      || action.getClip().name !== 'S7_Action'
+      || action.getClip().name !== 'S2_Animation.001'
+      || action.getClip().name !== 'S6_Animation_2'
+      || action.getClip().name !== 'S6_Bulger_Animation'){
+        action.play()
+      }
+
+      if(action.getClip().name === 'S3_1_Animation'){
+        action.play()
+        action.paused = true;
+      }
+
+      if(action.getClip().name === 'S6_Animation_2' || action.getClip().name === 'S6_Bulger_Animation'){
+        action.setEffectiveTimeScale(1);
+      }
     }
   }, [actions])
 
   const s1SpringData = useSpring({
-    scale: currentPage === 2 ? 1 : 0,
+    scale: currentPage === 2 || currentPage === 1 ? 1 : 0,
     config: { mass: 1, tension: 180, friction: 18 }
   });
 
@@ -56,7 +164,17 @@ export function Model(props) {
   });
 
   const s5SpringData = useSpring({
-    scale: currentPage === 8 ? 1 : 0,
+    scale: currentPage === 8 || currentPage === 9 ? 1 : 0,
+    config: { mass: 1, tension: 180, friction: 18 }
+  });
+
+  const s6SpringData = useSpring({
+    scale: currentPage === 10 ? 1 : 0,
+    config: { mass: 1, tension: 180, friction: 18 }
+  });
+
+  const s7SpringData = useSpring({
+    scale: currentPage === 11 ? 1 : 0,
     config: { mass: 1, tension: 180, friction: 18 }
   });
 
@@ -88,7 +206,7 @@ export function Model(props) {
 
         </animated.group>
 
-        <group scale={1} rotation={[0, Math.PI / -3, 0]} position={[0, 0, 0]}>
+        <group scale={1} rotation={[0, Math.PI / -3, 0]} position={[0, 1, 0]}>
           <animated.group name="S2_Group" scale={s2SpringData.scale}>
             <group name="S2Armature" position={[-0.169, 0.972, -0.769]}>
               <primitive object={nodes.ArmTop} />
@@ -143,32 +261,43 @@ export function Model(props) {
         </group>
 
         <group position={[-.25, 0, 0]}>
+          
           <animated.group name="S4_Group" scale={s4SpringData.scale}>
-            <group name="s4human_1" position={[-0.846, 0, 0]} rotation={[Math.PI / 2, 0, Math.PI / -6]} scale={0.01}>
-              <primitive object={nodes.mixamorig1Hips_1} />
-              <primitive object={nodes.elbowIKR_1} />
-              <primitive object={nodes.elbowIKL_2} />
-              <primitive object={nodes.handIKL_2} />
-              <primitive object={nodes.handIKR_1} />
-              <primitive object={nodes.headLookAt_1} />
-              <primitive object={nodes.kneeIKL_1} />
-              <primitive object={nodes.kneeIKR_1} />
-              <primitive object={nodes.heelIKL_1} />
-              <primitive object={nodes.heelIKR_1} />
-              <skinnedMesh name="s4human_1model" geometry={nodes.s4human_1model.geometry} material={materials.Human} skeleton={nodes.s4human_1model.skeleton} />
+            <group rotation={[0, Math.PI / 6, 0]}>
+              <group name="s4human_1" scale={0.01} position={[-0.846, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                <primitive object={nodes.mixamorig1Hips_1} />
+                <primitive object={nodes.elbowIKR_1} />
+                <primitive object={nodes.elbowIKL_2} />
+                <primitive object={nodes.handIKL_2} />
+                <primitive object={nodes.handIKR_1} />
+                <primitive object={nodes.headLookAt_1} />
+                <primitive object={nodes.kneeIKL_1} />
+                <primitive object={nodes.kneeIKR_1} />
+                <primitive object={nodes.heelIKL_1} />
+                <primitive object={nodes.heelIKR_1} />
+        
+                <skinnedMesh name="s4human_1model" geometry={nodes.s4human_1model.geometry} material={materials.Human} skeleton={nodes.s4human_1model.skeleton} />
+              </group>
+              <mesh name="01m" geometry={nodes['01m'].geometry} material={alwaysOnTopMaterial} />
             </group>
-            <group name="s4human_2" position={[0.865, 0, 0]} rotation={[Math.PI / 2, 0, Math.PI / 6]} scale={0.01}>
-              <primitive object={nodes.mixamorig1Hips_2} />
-              <primitive object={nodes.elbowIKR_2} />
-              <primitive object={nodes.elbowIKL_3} />
-              <primitive object={nodes.handIKL_3} />
-              <primitive object={nodes.handIKR_2} />
-              <primitive object={nodes.headLookAt_2} />
-              <primitive object={nodes.kneeIKL_2} />
-              <primitive object={nodes.kneeIKR_2} />
-              <primitive object={nodes.heelIKL_2} />
-              <primitive object={nodes.heelIKR_2} />
-              <skinnedMesh name="s4human_2model" geometry={nodes.s4human_2model.geometry} material={materials.Human} skeleton={nodes.s4human_2model.skeleton} />
+
+            <group rotation={[0, Math.PI / -6, 0]} position={[0, 0, -.25]}>
+              <group rotation={[Math.PI / 2, 0, 0]} position={[0.865, 0, 0]}>
+                <group name="s4human_2" scale={0.01}>
+                  <primitive object={nodes.mixamorig1Hips_2} />
+                  <primitive object={nodes.elbowIKR_2} />
+                  <primitive object={nodes.elbowIKL_3} />
+                  <primitive object={nodes.handIKL_3} />
+                  <primitive object={nodes.handIKR_2} />
+                  <primitive object={nodes.headLookAt_2} />
+                  <primitive object={nodes.kneeIKL_2} />
+                  <primitive object={nodes.kneeIKR_2} />
+                  <primitive object={nodes.heelIKL_2} />
+                  <primitive object={nodes.heelIKR_2} />
+                  <skinnedMesh name="s4human_2model" geometry={nodes.s4human_2model.geometry} material={materials.Human_Struggle} skeleton={nodes.s4human_2model.skeleton} />
+                </group>
+              </group>
+              <mesh name="05m" geometry={nodes['05m'].geometry} material={alwaysOnTopMaterial} />
             </group>
 
             <gridHelper args={[10, 10]} />
@@ -212,6 +341,41 @@ export function Model(props) {
               <mesh name="formulamodel018_1" geometry={nodes.formulamodel018_1.geometry} material={materials.vitezamica} />
             </group>
             <mesh name="FormluaPlane006" geometry={nodes.FormluaPlane006.geometry} material={materials.redArrow} position={[-3.209, -0.635, 0.328]} rotation={[0, 0, Math.PI]} scale={0.253} />
+          </animated.group>
+        </group>
+
+        <group rotation={[0, Math.PI / 1.4, 0]} position={[-1, 1, 4]}>
+          <animated.group name="S6_Group" scale={s6SpringData.scale}>
+            <mesh name="Bulger" geometry={nodes.Bulger.geometry} material={materials.Bulgar} position={[-0.401, 1.669, 1.03]} scale={0} />
+            <group name="HumanThrow" rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
+              <primitive object={nodes.mixamorig1Hips_3} />
+              <skinnedMesh name="humanthrowmodel" geometry={nodes.humanthrowmodel.geometry} material={materials.Human} skeleton={nodes.humanthrowmodel.skeleton} />
+            </group>
+            <mesh name="Baket" geometry={nodes.Baket.geometry} material={materials.Basket} position={[-0.272, 0.013, 0.358]} scale={0.458} />
+
+            <gridHelper args={[25, 25]} />
+            <mesh name="Plane" rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} scale={13}>
+              <planeGeometry args={[2, 2]} />
+              <meshStandardMaterial color="#000000" />
+            </mesh>
+          </animated.group>
+        </group>
+
+        <group scale={1} position={[.5, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+          <animated.group name="S7_Group" scale={s7SpringData.scale}>
+            <group name="s7human" rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
+              <primitive object={nodes.mixamorig1Hips_4} />
+              <primitive object={nodes.elbowIKR_3} />
+              <primitive object={nodes.elbowIKL_4} />
+              <primitive object={nodes.handIKL_4} />
+              <primitive object={nodes.handIKR_3} />
+              <primitive object={nodes.headLookAt_3} />
+              <primitive object={nodes.kneeIKL_3} />
+              <primitive object={nodes.kneeIKR_3} />
+              <primitive object={nodes.heelIKL_3} />
+              <primitive object={nodes.heelIKR_3} />
+              <skinnedMesh name="s7humanmodel" geometry={nodes.s7humanmodel.geometry} material={materials['Human.003']} skeleton={nodes.s7humanmodel.skeleton} />
+            </group>
           </animated.group>
         </group>
       </group>

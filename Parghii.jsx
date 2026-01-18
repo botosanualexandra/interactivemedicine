@@ -89,10 +89,29 @@ export function Model(props) {
           <primitive object={nodes.kneeIKR_2} />
           <primitive object={nodes.heelIKL_2} />
           <primitive object={nodes.heelIKR_2} />
-          <skinnedMesh name="s4human_2model" geometry={nodes.s4human_2model.geometry} material={materials.Human} skeleton={nodes.s4human_2model.skeleton} />
+          <skinnedMesh name="s4human_2model" geometry={nodes.s4human_2model.geometry} material={materials.Human_Struggle} skeleton={nodes.s4human_2model.skeleton} />
+        </group>
+        <group name="HumanThrow" rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
+          <primitive object={nodes.mixamorig1Hips_3} />
+          <skinnedMesh name="humanthrowmodel" geometry={nodes.humanthrowmodel.geometry} material={materials.Human} skeleton={nodes.humanthrowmodel.skeleton} />
+        </group>
+        <group name="s7human" rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
+          <primitive object={nodes.mixamorig1Hips_4} />
+          <primitive object={nodes.elbowIKR_3} />
+          <primitive object={nodes.elbowIKL_4} />
+          <primitive object={nodes.handIKL_4} />
+          <primitive object={nodes.handIKR_3} />
+          <primitive object={nodes.headLookAt_3} />
+          <primitive object={nodes.kneeIKL_3} />
+          <primitive object={nodes.kneeIKR_3} />
+          <primitive object={nodes.heelIKL_3} />
+          <primitive object={nodes.heelIKR_3} />
+          <skinnedMesh name="s7humanmodel" geometry={nodes.s7humanmodel.geometry} material={materials['Human.003']} skeleton={nodes.s7humanmodel.skeleton} />
         </group>
         <mesh name="Stand" geometry={nodes.Stand.geometry} material={materials.Metal} scale={0.362} />
-        <mesh name="FormluaPlane" geometry={nodes.FormluaPlane.geometry} material={materials.Formula} position={[1.802, 2.587, 0.058]} scale={0.253} />
+        <mesh name="05m" geometry={nodes['05m'].geometry} material={materials.S4_Text} />
+        <mesh name="01m" geometry={nodes['01m'].geometry} material={materials.S4_Text} />
+        <mesh name="FormluaPlane" geometry={nodes.FormluaPlane.geometry} material={materials.Formula} position={[2.248, 2.864, 0.058]} scale={0.253} />
         <mesh name="Cube001" geometry={nodes.Cube001.geometry} material={materials.Graph} position={[-3.778, -1.934, 0.098]} scale={0.253} />
         <mesh name="Cube002" geometry={nodes.Cube002.geometry} material={materials.Graph} position={[-3.68, -2.032, 0.098]} rotation={[0, 0, -Math.PI / 2]} scale={0.253} />
         <mesh name="Cube003" geometry={nodes.Cube003.geometry} material={materials.Graph} position={[-3.649, -0.121, 0.098]} rotation={[0, 0, -Math.PI / 2]} scale={0.253} />
@@ -123,6 +142,8 @@ export function Model(props) {
           <mesh name="formulamodel018_1" geometry={nodes.formulamodel018_1.geometry} material={materials.vitezamica} />
         </group>
         <mesh name="FormluaPlane006" geometry={nodes.FormluaPlane006.geometry} material={materials.redArrow} position={[-3.209, -0.635, 0.328]} rotation={[0, 0, Math.PI]} scale={0.253} />
+        <mesh name="Bulger" geometry={nodes.Bulger.geometry} material={materials.Bulgar} position={[-0.401, 1.669, 1.03]} scale={0} />
+        <mesh name="Baket" geometry={nodes.Baket.geometry} material={materials.Basket} position={[-0.272, 0.013, 0.358]} scale={0.458} />
       </group>
     </group>
   )

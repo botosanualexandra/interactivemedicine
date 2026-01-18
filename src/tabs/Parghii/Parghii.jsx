@@ -14,17 +14,19 @@ const cameraStates = [ //totalul slidelor + 3
   { position: [2, 2, 3], lookAt: [.25, .5, 0], fov: 34 },
   { position: [4, 2, 1], lookAt: [-1, 1, 1], fov: 55 },
 
-  { position: [2, 0, 0], lookAt: [0, 1, 0], fov: 60 },
+  { position: [1, 1, -1], lookAt: [-1, 2, 0], fov: 60 },
   { position: [2, 0, 8], lookAt: [0, 2, 0], fov: 45 },
   { position: [-20, 3, 25], lookAt: [-9, 1, 0], fov: 10 },
 
   { position: [5, -3, -5], lookAt: [0, 1.25, 0], fov: 90 },
-  { position: [-3, 3, 7], lookAt: [0, 1, 0], fov: 50 },
-  { position: [6, 0, 15], lookAt: [0, 0, 0], fov: 40 },
-  { position: [0, 0, 0], lookAt: [0, 0, 0], fov: 40 },
+  { position: [-4, 3, 7], lookAt: [0, 1.25, 0], fov: 50 },
+
+  { position: [2, 0, 15], lookAt: [0, 0, 0], fov: 40 },
+
+  { position: [-1, 1.3, 5], lookAt: [2, 4, 0], fov: 75 },
+
+  { position: [0, 1.5, 2], lookAt: [.1, 1.5, 0], fov: 25 },
   { position: [-3, 3, 7], lookAt: [0, 1, 0], fov: 40 },
-  { position: [-3, 3, 7], lookAt: [0, 1, 0], fov: 40 },
-  // { position: [-3, 3, 7], lookAt: [0, 1, 0], fov: 40 },
 ];
 
 function CameraController() {
@@ -130,7 +132,7 @@ function Skybox() {
     )
 }
 
-function Scene({ currentPage }) {
+function Scene({ currentPage, s3_1_ElapsedTime, triggerVarfuri, postura, triggerGreutate, triggerAruncare }) {
   return (
     <>
       <CameraController />
@@ -143,23 +145,20 @@ function Scene({ currentPage }) {
         shadow-mapSize-height={1024}
       />
       <pointLight position={[10, 10, 10]} intensity={0.5} />
-      <ParghiiModelRig currentPage={currentPage}/>
+      <Model 
+        currentPage={currentPage} 
+        s3_1_ElapsedTime={s3_1_ElapsedTime} 
+        triggerVarfuri={triggerVarfuri} 
+        postura={postura} 
+        triggerGreutate={triggerGreutate} 
+        triggerAruncare={triggerAruncare} />
       <PostProcessing enabled={true} />
       <Skybox />
     </>
   );
 }
 
-function ParghiiModelRig({ currentPage }) {
-  // You can use currentPage here to control animation, visibility, etc.
-  return (
-    <group>
-      <Model currentPage={currentPage} />
-    </group>
-  );
-}
-
-function Muschi() {
+function Parghii() {
   const [currentPage, setCurrentPage] = useState(1);
   const [language, setLanguage] = useState(window.currentLanguage === 'EN' ? 'en' : 'ro');
 
@@ -183,6 +182,16 @@ function Muschi() {
     return null;
   }
 
+  const [s3_1_ElapsedTime, setS3_1_ElapsedTime] = useState(.3);
+  const [triggerVarfuri, setTriggerVarfuri] = useState(0);
+  const [triggerGreutate, setTriggerGreutate] = useState(0);
+  const [postura, setPostura] = useState(0);
+  const [triggerAruncare, setTriggerAruncare] = useState(0);
+  
+  useEffect(() => {
+    console.log(s3_1_ElapsedTime);
+  }, [s3_1_ElapsedTime]);
+
   return (
     <>
       <div style={{
@@ -203,17 +212,27 @@ function Muschi() {
         <Canvas style={{ height: '100vh' }} camera={{ position: [0, 2, 5], fov: 40 }}>
           <ScrollControls pages={cameraStates.length} damping={0.1}>
             <PageTracker />
-            <Scene currentPage={currentPage} />
+            <Scene 
+            currentPage={currentPage} 
+            s3_1_ElapsedTime={s3_1_ElapsedTime} 
+            triggerVarfuri={triggerVarfuri} 
+            postura={postura} 
+            triggerGreutate={triggerGreutate} 
+            triggerAruncare={triggerAruncare} />
 
             <Scroll html style={{ width: '100%' }}>
               <Hero/>
               <CeEste/>
               <DeCe/>
-              <Tipuri/>
+              <Tipuri 
+              s3_1_ElapsedTime={s3_1_ElapsedTime} 
+              setS3_1_ElapsedTime={setS3_1_ElapsedTime} 
+              ridicaPeVarfuri={setTriggerVarfuri} 
+              ridicaGreutate={setTriggerGreutate} />
               <BratulFortei/>
               <Avantaj/>
-              <Ineficiente/>
-              <Probleme/>
+              <Ineficiente triggerAruncare={setTriggerAruncare} />
+              <Probleme postura={postura} setPostura={setPostura} />
               <Concluzii/>
             </Scroll>
           </ScrollControls>
@@ -244,12 +263,10 @@ function CeEste(){
 
       <ul>
         <h3>Elemente ale pârghiei:</h3>
-        <li>🔘 punct de sprijin (fulcrum)</li>
-        <li>💪 forță activă (mușchi)</li>
-        <li>🎯 rezistență (greutate)</li>
+        <li>punct de sprijin (fulcrum)</li>
+        <li>forță activă (mușchi)</li>
+        <li>rezistență (greutate)</li>
       </ul>
-
-      👉 Animație cu o pârghie simplă → apoi transpusă în corpul uman.
     </figure>
   );
 }
@@ -264,36 +281,35 @@ function DeCe(){
         <li>Mușchii = forța activă</li>
         <li>Greutatea corpului / obiectelor = rezistența</li>
       </ul>
-
-      <ul>
-        <h3>DEBUG - VIZUALIZARE</h3>
-        <li>Brațul = pârghie</li>
-        <li>Cotul = punct de sprijin</li>
-        <li>Bicepsul = forță</li>
-        <li>Greutatea din mână = rezistență</li>
-      </ul>
-
-      👉 Click pe braț → apar elementele pârghiei colorate.
     </figure>
   );
 }
 
-function Tipuri(){
+function Tipuri({ s3_1_ElapsedTime, setS3_1_ElapsedTime, ridicaPeVarfuri, ridicaGreutate }){
   return (
     <figure className="tipurii">
       <h2>3️⃣ Tipuri de pârghii în corpul uman</h2>
       <ul>
-        <h3>🟦 Pârghia de gradul I - (punctul de sprijin între forță și rezistență)</h3>
+        <h3>Pârghia de gradul I - (punctul de sprijin între forță și rezistență)</h3>
         <h3>Exemplu:</h3>
         <li>Capul pe coloană</li>
         <li>Gâtul menține poziția capului</li>
         <h3>Avantaj:</h3>
         <li>Schimbă direcția forței</li>
-        👉 Interactiv: înclină capul stânga–dreapta.
+        <h3 style={{marginTop: '20px'}}>Schimbă poziția gatului</h3>
+        <input
+          type="range"
+          min={0}
+          max={0.65}
+          step={0.05}
+          value={s3_1_ElapsedTime}
+          onChange={e => {setS3_1_ElapsedTime(e.target.value)}}
+          style={{ width: '100%' }}
+        />
       </ul>
 
       <ul>
-        <h3>🟩 Pârghia de gradul II - (rezistența între punctul de sprijin și forță)</h3>
+        <h3>Pârghia de gradul II - (rezistența între punctul de sprijin și forță)</h3>
         <h3>Exemplu:</h3>
         <li>Ridicarea pe vârfuri</li>
         <li>Glezna = punct de sprijin</li>
@@ -301,11 +317,14 @@ function Tipuri(){
         <li>Mușchii gambei = forță</li>
         <h3>Avantaj:</h3>
         <li>Mărește forța</li>
-        👉 Interactiv: ridicare pe vârfuri cu greutate variabilă.
+
+        <button style={{marginTop: '10px'}} onClick={() => {ridicaPeVarfuri(prev => prev + 1)}}>
+          ridicate pe varfuri
+        </button>
       </ul>
 
       <ul>
-        <h3>🟨 Pârghia de gradul III - (forța între punctul de sprijin și rezistență)</h3>
+        <h3>Pârghia de gradul III - (forța între punctul de sprijin și rezistență)</h3>
         <h3>Exemplu:</h3>
         <li>Flexia antebrațului</li>
         <li>Cotul = punct de sprijin</li>
@@ -314,7 +333,9 @@ function Tipuri(){
         <li>Greutatea din mână = rezistență</li>
         <h3>Avantaj:</h3>
         <li>Mărește viteza și amplitudinea mișcării</li>
-        👉 Interactiv: modifici poziția inserției mușchiului.
+        <button style={{marginTop: '10px'}} onClick={() => {ridicaGreutate(prev => prev + 1)}}>
+          ridica greutate
+        </button>
       </ul>
     </figure>
   );
@@ -323,7 +344,7 @@ function Tipuri(){
 function BratulFortei(){
   return (
     <figure className="bratulfortei">
-      <h2>4️⃣ Brațul forței și brațul rezistenței</h2>
+      <h2 style={{marginTop: '0px'}}>4️⃣ Brațul forței și brațul rezistenței</h2>
       <ul>
         <li>Brațul forței = distanța forței față de articulație</li>
         <li>Brațul rezistenței = distanța greutății față de articulație</li>
@@ -333,8 +354,6 @@ function BratulFortei(){
         <h3>Concluzie:</h3>
         <li>Cu cât brațul forței este mai mic → mușchiul trebuie să producă o forță mai mare.</li>
       </ul>
-
-      👉 Muți greutatea mai departe → vezi efortul crescut.
     </figure>
   );
 }
@@ -342,7 +361,7 @@ function BratulFortei(){
 function Avantaj(){
   return (
     <figure className="avantaj">
-      <h2>5️⃣ Avantaj mecanic în corpul uman</h2>
+      <h2 style={{marginTop: '0px'}}>5️⃣ Avantaj mecanic în corpul uman</h2>
       <ul>
         <h3>În corp:</h3>
         <li>De cele mai multe ori avantaj mecanic &lt; 1</li>
@@ -357,10 +376,10 @@ function Avantaj(){
   );
 }
 
-function Ineficiente(){
+function Ineficiente( { triggerAruncare } ){
   return (
     <figure className="ineficiente">
-      <h2>6️⃣ De ce corpul folosește pârghii „ineficiente”?</h2>
+      <h2 style={{marginTop: '40px'}}>6️⃣ De ce corpul folosește pârghii „ineficiente”?</h2>
       <ul>
         <h3>Răspuns:</h3>
         <li>Pentru mișcări rapide</li>
@@ -374,11 +393,15 @@ function Ineficiente(){
         <li>Scrisul</li>
         <li>Mersul</li>
       </ul>
+
+      <button style={{marginTop: '10px'}} onClick={() => {triggerAruncare(prev => prev + 1)}}>
+        arunca
+      </button>
     </figure>
   );
 }
 
-function Probleme(){
+function Probleme({ postura, setPostura }){
   return (
     <figure className="problemee">
       <h2>7️⃣ Probleme biomecanice legate de pârghii</h2>
@@ -393,8 +416,17 @@ function Probleme(){
         <h3>Aplicație practică:</h3>
         <li>Postura corectă reduce forțele inutile.</li>
       </ul>
-
-      👉 
+      <h3 style={{marginTop: '20px'}}>Corectează postura:
+        {postura > .5 ? <p style={{color: 'limegreen'}}>postura corecta</p> : <p style={{color: 'darkred'}}>postura incorecta</p>}</h3>
+      <input
+        type="range"
+        min={0}
+        max={1.6}
+        step={0.05}
+        value={postura}
+        onChange={e => {setPostura(e.target.value)}}
+        style={{ width: '100%' }}
+      />
     </figure>
   );
 }
@@ -416,4 +448,4 @@ function Concluzii(){
 
 
 
-export default Muschi;
+export default Parghii;

@@ -4,9 +4,29 @@
   background-color: rgba(255, 0, 0, 0);
   min-height: 110vh;
   border-bottom: 1px solid rgba(255, 255, 255, .5);
-  padding: 2rem;
+  padding: 2rem 3.5rem;
   margin-top: 50px;
 }
+
+.Parghii button {
+  margin: 0px;
+  border-radius: 5px;
+  background-color: rgba(76, 76, 255, 1);
+  background: linear-gradient(90deg, #7f5fff 0%, #4c4cff 100%);
+  transition: all 0.3s ease;
+  padding: 10px 35px;
+}
+
+.Parghii button:hover {
+  background-position: 100% 0;
+  background-size: 200% 100%;
+}
+
+.Parghii button:active {
+  transform: scale(0.9);
+  box-shadow: 0 0 8px rgba(76, 76, 255, 0.4);
+}
+
 
 .Parghii figure:nth-child(1){
   min-height: 100vh;
@@ -29,4 +49,31 @@
 
 .tipurii h2{
   margin-top: 0;
+}
+
+.tipurii input{
+  max-width: 30%;
+}
+
+.bratulfortei{
+   text-align: center;
+}
+
+.bratulfortei ul {
+  list-style: none;
+}
+
+.problemee h3{
+  display: flex;
+  gap: 5px;
+}
+
+.problemee p{
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.problemee input{
+  max-width: 40%;
 }
