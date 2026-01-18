@@ -12,6 +12,7 @@ import { animated, useSpring} from '@react-spring/three';
 
 import Model from './components/thumbnails/tbn_curgerea.jsx'
 import MODEL_Muscles from './components/thumbnails/tbn_muschi.jsx'
+import Model_Parghii from './components/thumbnails/tbn_parghii.jsx'
 
 import textDocument from './TextDocument.jsx'
 
@@ -27,6 +28,16 @@ function Home() {
 
   const chapter2SpringData = useSpring({
     scale: selectedChapter === 1 ? [1, 1, 1] : [0, 0, 0],
+    config: { mass: 1, tension: 180, friction: 18 }
+  });
+
+  const chapter3SpringData = useSpring({
+    scale: selectedChapter === 2 ? [1, 1, 1] : [0, 0, 0],
+    config: { mass: 1, tension: 180, friction: 18 }
+  });
+
+  const chapter4SpringData = useSpring({
+    scale: selectedChapter === 3 ? [1, 1, 1] : [0, 0, 0],
     config: { mass: 1, tension: 180, friction: 18 }
   });
 
@@ -89,13 +100,19 @@ function Home() {
         <section className="overlay">
           <h1>{allChapters[selectedChapter].title[language]}</h1>
           <p>{allChapters[selectedChapter].desc[language]}</p>
-          <button onClick={() => navigate(windowLocations[selectedChapter])}>
-            {allChapters[selectedChapter].button ? allChapters[selectedChapter].button[language] : (language === 'en' ? 'Learn More' : 'Află mai multe')}
-          </button>
+          {selectedChapter !== 3 && (
+            <button onClick={() => navigate(windowLocations[selectedChapter])}>
+              {allChapters[selectedChapter].button ? allChapters[selectedChapter].button[language] : (language === 'en' ? 'Learn More' : 'Află mai multe')}
+            </button>
+          )}
           <i className="fa-solid fa-arrow-left" id='arrowLeft'></i>
           <i className="fa-solid fa-arrow-right" id='arrowRight'></i>
         </section>
-        <Scene selectedChapter={selectedChapter} setSelectedChapter={setSelectedChapter} chapter1SpringData={chapter1SpringData} chapter2SpringData={chapter2SpringData} />
+        <Scene selectedChapter={selectedChapter} setSelectedChapter={setSelectedChapter} 
+        chapter1SpringData={chapter1SpringData} chapter2SpringData={chapter2SpringData} 
+        chapter3SpringData={chapter3SpringData} chapter4SpringData={chapter4SpringData} 
+        language={language}
+        />
       </section>
     </>
   )
@@ -230,7 +247,23 @@ function Skybox() {
   )
 }
 
-function Scene({chapter1SpringData, chapter2SpringData}) {
+function Scene({chapter1SpringData, chapter2SpringData, chapter3SpringData, chapter4SpringData, language}) {
+  // Helper to make a group always look at the camera
+  function Billboard({ children, ...props }) {
+    const group = useRef();
+    const { camera } = useThree();
+    useFrame(() => {
+      if (group.current) {
+        group.current.lookAt(camera.position);
+      }
+    });
+    return (
+      <group ref={group} {...props}>
+        {children}
+      </group>
+    );
+  }
+
   return (
     <Canvas style={{ height: '100%', width: '100%' }}>
       <CameraController 
@@ -258,6 +291,18 @@ function Scene({chapter1SpringData, chapter2SpringData}) {
 
         <animated.group scale={chapter2SpringData.scale}>
           <MODEL_Muscles rotation={[0, Math.PI / 2, 0]} scale={.3} position={[0, 0, 1.25]} />
+        </animated.group>
+
+        <animated.group scale={chapter3SpringData.scale}>
+          <Model_Parghii rotation={[0, Math.PI / 2, 0]} />
+        </animated.group>
+
+        <animated.group scale={chapter4SpringData.scale}>
+          <Billboard>
+            <Text position={[0, .5, 0]} fontSize={0.4} color="#ffffff" anchorX="center" anchorY="middle">
+              {language === 'en' ? 'coming soon' : 'momentan indisponibil'}
+            </Text>
+          </Billboard>
         </animated.group>
       </group>
 

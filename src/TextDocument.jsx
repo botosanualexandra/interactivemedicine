@@ -24,13 +24,11 @@ const textDocument = {
       title: { ro: "parghii - oasele", en: "levers - bones" },
       desc: { ro: "În corpul uman, oasele funcționează ca pârghii care permit mișcarea eficientă a membrelor. O pârghie este o structură rigidă (osul) care se rotește în jurul unui punct fix numit articulație (fulcrum). Mușchii aplică forță asupra oaselor pentru a produce mișcare, iar poziția punctului de sprijin, a forței și a rezistenței determină tipul de pârghie. Acest sistem permite amplificarea forței sau a vitezei mișcării, facilitând activități precum mersul, ridicarea sau prinderea obiectelor.", 
         en: "In the human body, bones function as levers that enable efficient movement of the limbs. A lever is a rigid structure (the bone) that rotates around a fixed point called a joint (fulcrum). Muscles apply force to the bones to produce movement, and the position of the fulcrum, the force, and the resistance determines the type of lever. This system allows for the amplification of force or speed of movement, facilitating activities such as walking, lifting, or grasping objects." },
-      
-
       button: { ro: "Află mai multe", en: "Learn More" }
     },
     {
       title: { ro: "forta", en: "force" },
-      desc: { ro: "Slide 3", en: "Slide 3" },
+      desc: { ro: "momentan indisponibil", en: "coming soon" },
       button: { ro: "Află mai multe", en: "Learn More" }
     }
   ],

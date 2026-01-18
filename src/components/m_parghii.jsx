@@ -61,7 +61,7 @@ export function Model(props) {
       action.reset(); // Ensure animation starts from the beginning
       action.setLoop(THREE.LoopOnce, 1);
       action.clampWhenFinished = true;
-      action.setEffectiveTimeScale(1);
+      action.setEffectiveTimeScale(1.5);
       action.play();
     }
 
@@ -70,7 +70,7 @@ export function Model(props) {
       action2.reset(); // Ensure animation starts from the beginning
       action2.setLoop(THREE.LoopOnce, 1);
       action2.clampWhenFinished = true;
-      action2.setEffectiveTimeScale(1);
+      action2.setEffectiveTimeScale(1.5);
       action2.play();
     }
 
@@ -128,7 +128,7 @@ export function Model(props) {
       }
 
       if(action.getClip().name === 'S6_Animation_2' || action.getClip().name === 'S6_Bulger_Animation'){
-        action.setEffectiveTimeScale(1);
+        action.setEffectiveTimeScale(1.5);
       }
     }
   }, [actions])

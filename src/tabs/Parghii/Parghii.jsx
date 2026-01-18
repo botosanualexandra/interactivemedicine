@@ -395,7 +395,7 @@ function Probleme({ language, postura, setPostura }){
         {t.aplicatieList.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
       <h3 style={{marginTop: '20px'}}>{t.corecteaza}
-        {postura > .5 ? <p style={{color: 'limegreen'}}>{t.corecta}</p> : <p style={{color: 'darkred'}}>{t.incorecta}</p>}</h3>
+        {postura > 1.25 ? <p style={{color: 'limegreen'}}>{t.corecta}</p> : <p style={{color: 'darkred'}}>{t.incorecta}</p>}</h3>
       <input
         type="range"
         min={0}

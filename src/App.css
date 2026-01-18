@@ -13,7 +13,7 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.75) 0%, rgba(118, 75, 162, 0.75) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .hero h1{
