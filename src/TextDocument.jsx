@@ -4,8 +4,8 @@
 
 const textDocument = {
   hero: {
-    title: { ro: "Medicină Interactivă", en: "Interactive Medicine" },
-    subtitle: { ro: "Derulează în jos pentru a învăța", en: "Scroll down to learn" }
+    title: { ro: "Universul cunoașterii", en: "The Universe of Knowledge" },
+    subtitle: { ro: "poveste despre fizică și corpul uman", en: "a story about physics and the human body" }
   },
   chapters: [
     {
