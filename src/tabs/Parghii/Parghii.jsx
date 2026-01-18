@@ -163,10 +163,14 @@ function Parghii() {
   const [language, setLanguage] = useState(window.currentLanguage === 'EN' ? 'en' : 'ro');
 
   useEffect(() => {
-    const handler = (e) => setLanguage(e.detail === 'EN' ? 'en' : 'ro');
+    const handler = (e) => setLanguage(window.currentLanguage === 'EN' ? 'en' : 'ro');
     window.addEventListener('languageChanged', handler);
     return () => window.removeEventListener('languageChanged', handler);
   }, []);
+
+  useEffect(() => {
+    document.title = language === 'en' ? 'Levers - Bones' : 'Parghii - Oasele';
+  }, [language]);
 
   // Custom hook to track scroll page
   function PageTracker() {
@@ -194,7 +198,7 @@ function Parghii() {
 
   return (
     <>
-      <div style={{
+      {/* <div style={{
         position: 'fixed',
         top: 0,
         left: 0,
@@ -207,7 +211,7 @@ function Parghii() {
         textAlign: 'left'
       }}>
         current page - {currentPage}
-      </div>
+      </div> */}
       <article className="Parghii">
         <Canvas style={{ height: '100vh' }} camera={{ position: [0, 2, 5], fov: 40 }}>
           <ScrollControls pages={cameraStates.length} damping={0.1}>
@@ -221,19 +225,20 @@ function Parghii() {
             triggerAruncare={triggerAruncare} />
 
             <Scroll html style={{ width: '100%' }}>
-              <Hero/>
-              <CeEste/>
-              <DeCe/>
+              <Hero language={language}/>
+              <CeEste language={language}/>
+              <DeCe language={language}/>
               <Tipuri 
-              s3_1_ElapsedTime={s3_1_ElapsedTime} 
-              setS3_1_ElapsedTime={setS3_1_ElapsedTime} 
-              ridicaPeVarfuri={setTriggerVarfuri} 
-              ridicaGreutate={setTriggerGreutate} />
-              <BratulFortei/>
-              <Avantaj/>
-              <Ineficiente triggerAruncare={setTriggerAruncare} />
-              <Probleme postura={postura} setPostura={setPostura} />
-              <Concluzii/>
+                language={language}
+                s3_1_ElapsedTime={s3_1_ElapsedTime} 
+                setS3_1_ElapsedTime={setS3_1_ElapsedTime} 
+                ridicaPeVarfuri={setTriggerVarfuri} 
+                ridicaGreutate={setTriggerGreutate} />
+              <BratulFortei language={language}/>
+              <Avantaj language={language}/>
+              <Ineficiente language={language} triggerAruncare={setTriggerAruncare} />
+              <Probleme language={language} postura={postura} setPostura={setPostura} />
+              <Concluzii language={language}/>
             </Scroll>
           </ScrollControls>
         </Canvas>
@@ -242,61 +247,53 @@ function Parghii() {
   );
 }
 
-function Hero() {
+function Hero({ language }) {
   return (
     <figure className="hero">
-      <h1>Parghii</h1>
+      <h1>{textDocument[language].hero.title}</h1>
     </figure>
   );
 }
 
-function CeEste(){
+function CeEste({ language }){
   return (
     <figure className="ceeste">
-      <h2>1️⃣ Ce este o parghie?</h2>
+      <h2>{textDocument[language].ceEste.title}</h2>
       <ul>
-        <h3>O pârghie este un sistem mecanic care:</h3>
-        <li>transmite forța</li>
-        <li>mărește sau micșorează forța</li>
-        <li>schimbă direcția forței</li>
+        <h3>{textDocument[language].ceEste.desc}</h3>
+        {textDocument[language].ceEste.list.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
-
       <ul>
-        <h3>Elemente ale pârghiei:</h3>
-        <li>punct de sprijin (fulcrum)</li>
-        <li>forță activă (mușchi)</li>
-        <li>rezistență (greutate)</li>
+        <h3>{textDocument[language].ceEste.elements}</h3>
+        {textDocument[language].ceEste.elementsList.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
     </figure>
   );
 }
 
-function DeCe(){
+function DeCe({ language }){
   return (
     <figure className="dece">
-      <h2>2️⃣ De ce sunt oasele pârghii?</h2>
+      <h2>{textDocument[language].deCe.title}</h2>
       <ul>
-        <li>Oasele = brațele pârghiei</li>
-        <li>Articulațiile = puncte de sprijin</li>
-        <li>Mușchii = forța activă</li>
-        <li>Greutatea corpului / obiectelor = rezistența</li>
+        {textDocument[language].deCe.list.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
     </figure>
   );
 }
 
-function Tipuri({ s3_1_ElapsedTime, setS3_1_ElapsedTime, ridicaPeVarfuri, ridicaGreutate }){
+function Tipuri({ language, s3_1_ElapsedTime, setS3_1_ElapsedTime, ridicaPeVarfuri, ridicaGreutate }){
+  const t = textDocument[language].tipuri;
   return (
     <figure className="tipurii">
-      <h2>3️⃣ Tipuri de pârghii în corpul uman</h2>
+      <h2>{t.title}</h2>
       <ul>
-        <h3>Pârghia de gradul I - (punctul de sprijin între forță și rezistență)</h3>
-        <h3>Exemplu:</h3>
-        <li>Capul pe coloană</li>
-        <li>Gâtul menține poziția capului</li>
-        <h3>Avantaj:</h3>
-        <li>Schimbă direcția forței</li>
-        <h3 style={{marginTop: '20px'}}>Schimbă poziția gatului</h3>
+        <h3>{t.grad1}</h3>
+        <h3>{t.grad1Ex}</h3>
+        {t.grad1List.map((item, i) => <li key={i}>{item}</li>)}
+        <h3>{t.grad1Adv}</h3>
+        {t.grad1AdvList.map((item, i) => <li key={i}>{item}</li>)}
+        <h3 style={{marginTop: '20px'}}>{t.grad1Pos}</h3>
         <input
           type="range"
           min={0}
@@ -307,117 +304,98 @@ function Tipuri({ s3_1_ElapsedTime, setS3_1_ElapsedTime, ridicaPeVarfuri, ridica
           style={{ width: '100%' }}
         />
       </ul>
-
       <ul>
-        <h3>Pârghia de gradul II - (rezistența între punctul de sprijin și forță)</h3>
-        <h3>Exemplu:</h3>
-        <li>Ridicarea pe vârfuri</li>
-        <li>Glezna = punct de sprijin</li>
-        <li>Greutatea corpului = rezistență</li>
-        <li>Mușchii gambei = forță</li>
-        <h3>Avantaj:</h3>
-        <li>Mărește forța</li>
-
+        <h3>{t.grad2}</h3>
+        <h3>{t.grad2Ex}</h3>
+        {t.grad2List.map((item, i) => <li key={i}>{item}</li>)}
+        <h3>{t.grad2Adv}</h3>
+        {t.grad2AdvList.map((item, i) => <li key={i}>{item}</li>)}
         <button style={{marginTop: '10px'}} onClick={() => {ridicaPeVarfuri(prev => prev + 1)}}>
-          ridicate pe varfuri
+          {t.grad2Btn}
         </button>
       </ul>
-
       <ul>
-        <h3>Pârghia de gradul III - (forța între punctul de sprijin și rezistență)</h3>
-        <h3>Exemplu:</h3>
-        <li>Flexia antebrațului</li>
-        <li>Cotul = punct de sprijin</li>
-        <li>Greutatea corpului = rezistență</li>
-        <li>Bicepsul = forță</li>
-        <li>Greutatea din mână = rezistență</li>
-        <h3>Avantaj:</h3>
-        <li>Mărește viteza și amplitudinea mișcării</li>
+        <h3>{t.grad3}</h3>
+        <h3>{t.grad3Ex}</h3>
+        {t.grad3List.map((item, i) => <li key={i}>{item}</li>)}
+        <h3>{t.grad3Adv}</h3>
+        {t.grad3AdvList.map((item, i) => <li key={i}>{item}</li>)}
         <button style={{marginTop: '10px'}} onClick={() => {ridicaGreutate(prev => prev + 1)}}>
-          ridica greutate
+          {t.grad3Btn}
         </button>
       </ul>
     </figure>
   );
 }
 
-function BratulFortei(){
+function BratulFortei({ language }){
+  const t = textDocument[language].bratulFortei;
   return (
     <figure className="bratulfortei">
-      <h2 style={{marginTop: '20px'}}>4️⃣ Brațul forței și brațul rezistenței</h2>
+      <h2 style={{marginTop: '20px'}}>{t.title}</h2>
       <ul>
-        <li>Brațul forței = distanța forței față de articulație</li>
-        <li>Brațul rezistenței = distanța greutății față de articulație</li>
+        {t.list.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
-
       <ul>
-        <h3>Concluzie:</h3>
-        <li>Cu cât brațul forței este mai mic → mușchiul trebuie să producă o forță mai mare.</li>
+        <h3>{t.concluzie}</h3>
+        {t.concluzieList.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
     </figure>
   );
 }
 
-function Avantaj(){
+function Avantaj({ language }){
+  const t = textDocument[language].avantaj;
   return (
     <figure className="avantaj">
-      <h2 style={{marginTop: '0px'}}>5️⃣ Avantaj mecanic în corpul uman</h2>
+      <h2 style={{marginTop: '0px'}}>{t.title}</h2>
       <ul>
-        <h3>În corp:</h3>
-        <li>De cele mai multe ori avantaj mecanic &lt; 1</li>
+        <h3>{t.inCorp}</h3>
+        {t.list.map((item, i) => <li key={i}>{item}</li>)}
         <ul>
-          <h3>Corpul sacrifică forța pentru:</h3>
-          <li>viteză</li>
-          <li>precizie</li>
-          <li>amplitudine</li>
+          <h3>{t.sacrificiu}</h3>
+          {t.sacrificiuList.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
       </ul>
     </figure>
   );
 }
 
-function Ineficiente( { triggerAruncare } ){
+function Ineficiente({ language, triggerAruncare }){
+  const t = textDocument[language].ineficiente;
   return (
     <figure className="ineficiente">
-      <h2 style={{marginTop: '8rem'}}>6️⃣ De ce corpul folosește pârghii „ineficiente”?</h2>
+      <h2 style={{marginTop: '8rem'}}>{t.title}</h2>
       <ul>
-        <h3>Răspuns:</h3>
-        <li>Pentru mișcări rapide</li>
-        <li>Pentru coordonare fină</li>
-        <li>Pentru adaptabilitate</li>
+        <h3>{t.raspuns}</h3>
+        {t.list.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
-
       <ul>
-        <h3>Exemplu:</h3>
-        <li>Aruncarea</li>
-        <li>Scrisul</li>
-        <li>Mersul</li>
+        <h3>{t.exemplu}</h3>
+        {t.exempluList.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
-
       <button style={{marginTop: '10px'}} onClick={() => {triggerAruncare(prev => prev + 1)}}>
-        arunca
+        {t.btn}
       </button>
     </figure>
   );
 }
 
-function Probleme({ postura, setPostura }){
+function Probleme({ language, postura, setPostura }){
+  const t = textDocument[language].probleme;
   return (
     <figure className="problemee">
-      <h2>7️⃣ Probleme biomecanice legate de pârghii</h2>
+      <h2>{t.title}</h2>
       <ul>
-        <h3>Exemple:</h3>
-        <li>Poziții incorecte</li>
-        <li>Greutăți purtate departe de corp</li>
-        <li>Suprasolicitarea articulațiilor</li>
+        <h3>{t.exemple}</h3>
+        {t.exempleList.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
-
       <ul>
-        <h3>Aplicație practică:</h3>
-        <li>Postura corectă reduce forțele inutile.</li>
+        <h3>{t.aplicatie}</h3>
+        {t.aplicatieList.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
-      <h3 style={{marginTop: '20px'}}>Corectează postura:
-        {postura > .5 ? <p style={{color: 'limegreen'}}>postura corecta</p> : <p style={{color: 'darkred'}}>postura incorecta</p>}</h3>
+      <h3 style={{marginTop: '20px'}}>{t.corecteaza}
+        {postura > .5 ? <p style={{color: 'limegreen'}}>{t.corecta}</p> : <p style={{color: 'darkred'}}>{t.incorecta}</p>}</h3>
       <input
         type="range"
         min={0}
@@ -431,16 +409,14 @@ function Probleme({ postura, setPostura }){
   );
 }
 
-function Concluzii(){
+function Concluzii({ language }){
+  const t = textDocument[language].concluzii;
   return (
     <figure className="concluzii">
-      <h2>🎯 Concluzie generală</h2>
-      <p>Corpul uman este un sistem biomecanic complex, unde:</p>
+      <h2>{t.title}</h2>
+      <p>{t.desc}</p>
       <ul>
-        <li>mușchii produc forță</li>
-        <li>oasele acționează ca pârghii</li>
-        <li>articulațiile sunt puncte de sprijin</li>
-        <li>iar fluidele mențin viața</li>
+        {t.list.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
     </figure>
   );

@@ -168,6 +168,10 @@ function Muschi() {
   const [language, setLanguage] = useState(window.currentLanguage === 'EN' ? 'en' : 'ro');
 
   useEffect(() => {
+    document.title = language === 'en' ? 'Muscles' : 'Mușchi';
+  }, [language]);
+
+  useEffect(() => {
     const handler = (e) => setLanguage(e.detail === 'EN' ? 'en' : 'ro');
     window.addEventListener('languageChanged', handler);
     return () => window.removeEventListener('languageChanged', handler);

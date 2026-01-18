@@ -6,9 +6,11 @@ import { BlendFunction } from 'postprocessing'
 import './Fluide.css'
 import MODEL_Sange from '../../components/m_sange'
 import { useState, useRef } from 'react';
+import text from './TextDocument';
 import MODEL_Inima from '../../components/m_inima'
 import * as THREE from 'three'
 import MODEL_Arm from '../../components/m_arm'
+import { useEffect } from 'react';
 
 function Fluide() {
   const [animationsSpeed, setAnimationsSpeed] = useState(.25);
@@ -21,6 +23,19 @@ function Fluide() {
     fov: 40
   });
   const [currentSection, setCurrentSection] = useState(0);
+  const [language, setLanguage] = useState(window.currentLanguage === 'EN' ? 'en' : 'ro');
+
+  useEffect(() => {
+    const handler = () => {
+      setLanguage(window.currentLanguage === 'EN' ? 'en' : 'ro');
+    };
+    window.addEventListener('languageChanged', handler);
+    return () => window.removeEventListener('languageChanged', handler);
+  }, []);
+
+  useEffect(() => {
+    document.title = language === 'en' ? 'Fluids' : 'Fluide';
+  }, [language]);
 
   return (
     <>
@@ -38,10 +53,10 @@ function Fluide() {
               setCurrentSection={setCurrentSection}
             />
             <Scroll html style={{ width: '100%' }}>
-              <Hero />
-              <CeEsteUnFluid />
-              <Necesara animationsSpeed={animationsSpeed} setAnimationsSpeed={setAnimationsSpeed}/>
-              <CePune setHeartBpm={setHeartBpm} setAnimationTime={setAnimationTime} animationTime={animationTime} />
+              <Hero language={language} />
+              <CeEsteUnFluid language={language} />
+              <Necesara language={language} animationsSpeed={animationsSpeed} setAnimationsSpeed={setAnimationsSpeed}/>
+              <CePune language={language} setHeartBpm={setHeartBpm} setAnimationTime={setAnimationTime} animationTime={animationTime} />
               {/* <Presiune /> */}
               {/* <Probleme /> */}
             </Scroll>
@@ -427,54 +442,34 @@ function Scene({ animationsSpeed, heartBpm, animationTime, debugMode, debugCamer
   );
 }
 
-function Hero() {
+function Hero({ language }) {
   return (
     <figure className="s1hero">
-      <h1>curgerea fluideor în corpul uman</h1>
-      <p>Fluidele din corpul nostru, cum ar fi sângele și limfa, sunt esențiale pentru transportul substanțelor vitale și menținerea sănătății.</p>
+      <h1>{text[language].hero.title}</h1>
+      <p>{text[language].hero.desc}</p>
     </figure>
   )
 }
 
-function CeEsteUnFluid() {
+function CeEsteUnFluid({ language }) {
   return (
     <figure className="ceesteunfluid">
-      <h2>1️⃣ Ce este un fluid?</h2>
-      <p>Un fluid este o substanță care curge și ia forma 
-        vasului în care se află.</p>
-      {/* <h3>În corp avem două fluide principale:</h3>
-      <article>
-        <button>Sângele 🟥</button>
-        <button>Limfa 🟩</button>
-      </article> */}
-      {/* <div style={{ margin: '20px 0' }}>
-        <label htmlFor="flow-speed">Viteza curgerii: </label>
-        <input 
-          type="range" 
-          id="flow-speed" 
-          min="0.1" 
-          max="2" 
-          step="0.1" 
-          defaultValue="1"
-          style={{ margin: '0 10px' }}
-          onChange={(e) => setAnimationsSpeed(parseFloat(e.target.value))}
-        />
-        <span>{animationsSpeed}x</span>
-      </div> */}
+      <h2>{text[language].ceEsteUnFluid.title}</h2>
+      <p>{text[language].ceEsteUnFluid.desc}</p>
     </figure>
   )
 }
 
-function Necesara({ animationsSpeed, setAnimationsSpeed }){
+function Necesara({ language, animationsSpeed, setAnimationsSpeed }){
   return (
     <figure className="necesara">
       <header>
-        <h2>2️⃣ De ce este necesară curgerea fluidelor?</h2>
-        <p>Un fluid este o substanță care curge și ia forma vasului în care se află.</p>
+        <h2>{text[language].necesara.title}</h2>
+        <p>{text[language].necesara.desc}</p>
       </header>
 
       <div>
-        <h3 htmlFor="flow-speed">viteza fluideor</h3>
+        <h3 htmlFor="flow-speed">{text[language].necesara.viteza}</h3>
         <input 
           type="range" 
           id="flow-speed" 
@@ -484,39 +479,25 @@ function Necesara({ animationsSpeed, setAnimationsSpeed }){
           defaultValue=".25"
           onChange={(e) => setAnimationsSpeed(parseFloat(e.target.value))}
         />
-        {/* <span>{animationsSpeed}x</span> */}
       </div>
 
       <article>
         <ul>
-          <h3>Funcțiile sângelui:</h3>
-          <li>Transportă oxigen</li>
-          <li>Transportă nutrienți</li>
-          <li>Elimină dioxidul de carbon și toxinele</li>
-          <li>Transportă hormoni</li>
-          <li>Apără organismul</li>
+          <h3>{text[language].necesara.functiiSange}</h3>
+          {text[language].necesara.functiiSangeList.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
 
         <ul>
-          <h3>Funcțiile limfei:</h3>
-          <li>Drenează lichidele din țesuturi</li>
-          <li>Apără organismul (sistem imunitar)</li>
-          <li>Transportă grăsimi</li>
+          <h3>{text[language].necesara.functiiLimfa}</h3>
+          {text[language].necesara.functiiLimfaList.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
-        </article>
-      {/* 👉 Click pe o organ → vezi ce aduce sângele acolo. */}
+      </article>
     </figure>
   )
 }
 
-function CePune({ setHeartBpm, setAnimationTime, animationTime }){
-   const bpms = {
-    72: 'Normal', 
-    100: 'Light exercise',
-    140: 'Moderate exercise',
-    180: 'High intensity exercise'
-  };
-
+function CePune({ language, setHeartBpm, setAnimationTime, animationTime }){
+  const bpms = text[language].bpmDesc;
   const [selectedBpmIndex, setSelectedBpmIndex] = useState(0);
   const bpmValues = Object.keys(bpms).map(Number);
   const currentBpm = bpmValues[selectedBpmIndex];
@@ -530,18 +511,17 @@ function CePune({ setHeartBpm, setAnimationTime, animationTime }){
   return (
     <figure className="cepune">
       <header>
-        <h2>3️⃣ Ce pune fluidele în mișcare?</h2>
-        <p>Fluidele din corpul nostru nu se mișcă de la sine - au nevoie de forțe care să le pună în circulație.</p>
+        <h2>{text[language].cePune.title}</h2>
+        <p>{text[language].cePune.desc}</p>
       </header>
 
       <article>
         <ul>
-          <h3>🩸 Sângele:</h3>
-          <li>Este pus în mișcare de inimă (pompa).</li>
-          <li>Inima creează presiune.</li>
+          <h3>{text[language].cePune.sange}</h3>
+          {text[language].cePune.sangeList.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
 
-        <h3>Bătăi Pe Minut: {currentBpm}bpm - {currentDescription}</h3>
+        <h3>{text[language].cePune.bpm} {currentBpm}bpm - {currentDescription}</h3>
         <input 
           type="range" 
           id="bpm-slider" 
@@ -556,13 +536,11 @@ function CePune({ setHeartBpm, setAnimationTime, animationTime }){
 
       <article>
         <ul>
-          <h3>💪 Limfa este pusa in miscare de</h3>
-          <li>contracțiile mușchilor</li>
-          <li>respirație</li>
-          <li>valvele vaselor limfatice</li>
+          <h3>{text[language].cePune.limfa}</h3>
+          {text[language].cePune.limfaList.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
 
-        <h3>Controlează mișcarea musculară:</h3>
+        <h3>{text[language].cePune.control}</h3>
         <input 
           type="range" 
           min="0" 
@@ -572,12 +550,9 @@ function CePune({ setHeartBpm, setAnimationTime, animationTime }){
           onChange={(e) => {
             setAnimationTime(parseFloat(e.target.value))
             handleBpmChange(parseInt(e.target.value))
-          }
-          }
+          }}
         />
       </article>
-      {/* 👉 Apasă pe inimă → vezi pulsul și debitul.
-      👉 Activează mușchii → vezi limfa cum începe să circule. */}
     </figure>
   )
 }

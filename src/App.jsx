@@ -39,7 +39,7 @@ function Home() {
   }
 
   useEffect(() => {
-    document.title = language === 'en' ? 'Interactive Medicine - Home' : 'Medicină Interactivă - Acasă';
+    document.title = language === 'en' ? 'The Universe of Knowledge - Home' : 'Universul cunoașterii - Acasă';
   }, [language]);
 
   useEffect(() => {
