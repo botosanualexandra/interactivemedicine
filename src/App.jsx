@@ -74,7 +74,8 @@ function Home() {
     };
   }, []);
 
-  const windowLocations = ['/botosanumedicina/circulatia', '/botosanumedicina/muschi', '/botosanumedicina/parghii', '/botosanumedicina/forta'];
+  const base = import.meta.env.BASE_URL;
+  const windowLocations = [`${base}fluide`, `${base}muschi`, `${base}parghii`, `${base}forta`];
 
   return (
     <>

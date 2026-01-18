@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 
-import { createBrowserRouter, RouterProvider} from 'react-router-dom'
+import { BrowserRouter, createBrowserRouter, RouterProvider, Routes, Route} from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 
 import Home from './App.jsx'
@@ -11,17 +11,17 @@ import Muschi from './tabs/Muschi/Muschi.jsx'
 import Parghii from './tabs/Parghii/Parghii.jsx'
 import NotFoundPage from './NotFoundPage.jsx'
 
-const router = createBrowserRouter([
-  { path: '/botosanumedicina', element: <Home /> },
-  { path: '/botosanumedicina/circulatia', element: <Fluide /> },
-  { path: '/botosanumedicina/muschi', element: <Muschi /> },
-  { path: '/botosanumedicina/parghii', element: <Parghii /> },
-  { path: '*', element: <NotFoundPage /> },
-])
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Navbar />
-    <RouterProvider router={router} />
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <Routes>
+        <Route path="*" element={<Home />} />
+        <Route path="/fluide" element={<Fluide />} />
+        <Route path="/muschi" element={<Muschi />} />
+        <Route path="/parghii" element={<Parghii />} />
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
+      </Routes>
+    </BrowserRouter>
   </StrictMode>,
 )

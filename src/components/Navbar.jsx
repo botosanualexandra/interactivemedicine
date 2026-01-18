@@ -37,7 +37,7 @@ function Navbar() {
   return (
     <section className="navbar">
       {showBack && (
-        <article className="back-button" onClick={() => window.location.href = '/botosanumedicina'}>
+        <article className="back-button" onClick={() => window.location.href = '/botosanumedicina/'}>
           <i className="fa-solid fa-angle-left"></i>
         </article>
       )}
