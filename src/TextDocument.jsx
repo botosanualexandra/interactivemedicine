@@ -5,7 +5,7 @@
 const textDocument = {
   hero: {
     title: { ro: "Universul cunoașterii", en: "The Universe of Knowledge" },
-    subtitle: { ro: "poveste despre fizică și corpul uman", en: "a story about physics and the human body" }
+    subtitle: { ro: "o poveste despre fizică și corpul uman", en: "a story about physics and the human body" }
   },
   chapters: [
     {
