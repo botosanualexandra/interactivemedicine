@@ -8,7 +8,7 @@ function SolidColorMaterial(color) {
 
 export function MODEL_Sange(props, showVeins = 1, showLimfa = 1) {
   const { animationSpeed = 1 } = props
-  const { nodes, materials, animations } = useGLTF('./botosanumedicina/models/sangelesilimfa.glb')
+  const { nodes, materials, animations } = useGLTF('./models/sangelesilimfa.glb')
   const group = React.useRef()
   const { actions } = useAnimations(animations, group)
 
@@ -394,6 +394,6 @@ export function MODEL_Sange(props, showVeins = 1, showLimfa = 1) {
   )
 }
 
-useGLTF.preload('./botosanumedicina/models/sangelesilimfa.glb')
+useGLTF.preload('./models/sangelesilimfa.glb')
 
 export default MODEL_Sange

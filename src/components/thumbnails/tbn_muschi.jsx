@@ -34,7 +34,7 @@ function BRAINMATERIAL(){
 
 export function MODEL_Muscles(props) {
   const group = React.useRef()
-  const { scene, animations } = useGLTF('./botosanumedicina/models/muschi.glb')
+  const { scene, animations } = useGLTF('./models/muschi.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
   const { nodes, materials } = useGraph(clone)
   const { actions, names } = useAnimations(animations, group)
@@ -57,7 +57,7 @@ export function MODEL_Muscles(props) {
   );
 }
 
-useGLTF.preload('./botosanumedicina/models/muschi.glb')
+useGLTF.preload('./models/muschi.glb')
 
 export default MODEL_Muscles
 

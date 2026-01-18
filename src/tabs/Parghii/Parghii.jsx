@@ -80,11 +80,11 @@ function PostProcessing({enabled = true}) {
         luminanceSmoothing={0.025}
         blendFunction={BlendFunction.ADD}
       />
-
+{/* 
       <ChromaticAberration
         blendFunction={BlendFunction.NORMAL}
         offset={[0.001, 0.001]}
-      />
+      /> */}
     </EffectComposer>
   )
 }
@@ -344,7 +344,7 @@ function Tipuri({ s3_1_ElapsedTime, setS3_1_ElapsedTime, ridicaPeVarfuri, ridica
 function BratulFortei(){
   return (
     <figure className="bratulfortei">
-      <h2 style={{marginTop: '0px'}}>4️⃣ Brațul forței și brațul rezistenței</h2>
+      <h2 style={{marginTop: '20px'}}>4️⃣ Brațul forței și brațul rezistenței</h2>
       <ul>
         <li>Brațul forței = distanța forței față de articulație</li>
         <li>Brațul rezistenței = distanța greutății față de articulație</li>
@@ -379,7 +379,7 @@ function Avantaj(){
 function Ineficiente( { triggerAruncare } ){
   return (
     <figure className="ineficiente">
-      <h2 style={{marginTop: '40px'}}>6️⃣ De ce corpul folosește pârghii „ineficiente”?</h2>
+      <h2 style={{marginTop: '8rem'}}>6️⃣ De ce corpul folosește pârghii „ineficiente”?</h2>
       <ul>
         <h3>Răspuns:</h3>
         <li>Pentru mișcări rapide</li>
